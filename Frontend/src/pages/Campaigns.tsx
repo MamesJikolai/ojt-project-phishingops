@@ -2,7 +2,7 @@ import Message from '../components/Message.tsx'
 import SearchBar from '../components/SearchBar.tsx'
 import DefaultButton from '../components/DefaultButton.tsx'
 
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import useMockData from '../hook/useMockData.ts'
 import BasicTable from '../components/BasicTable.tsx'
 import type { ColumnDef } from '@tanstack/react-table'

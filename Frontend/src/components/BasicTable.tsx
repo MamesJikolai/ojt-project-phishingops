@@ -5,17 +5,12 @@ import {
 } from '@tanstack/react-table'
 import type { ColumnDef } from '@tanstack/react-table'
 
-// 1. Remove TValue from the interface. Use 'any' for the column's value type.
-interface BasicTableProps<TData, TValue> {
+interface BasicTableProps<TData> {
     data: TData[]
-    columns: ColumnDef<TData, TValue>[]
+    columns: ColumnDef<TData, any>[]
 }
 
-// 2. Remove TValue from the component declaration
-function BasicTable<TData, TValue>({
-    data,
-    columns,
-}: BasicTableProps<TData, TValue>) {
+function BasicTable<TData>({ data, columns }: BasicTableProps<TData>) {
     const table = useReactTable({
         data,
         columns,
@@ -29,7 +24,7 @@ function BasicTable<TData, TValue>({
                     {table.getHeaderGroups().map((headerGroup) => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map((header) => (
-                                <th colSpan={header.colSpan} key={header.id}>
+                                <th key={header.id} colSpan={header.colSpan}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(

@@ -18,7 +18,7 @@ function BasicTable<T>({ data, columns }: BasicTableProps<T>) {
     })
 
     return (
-        <div className="w-full">
+        <div className="w-full overflow-x-auto">
             <table>
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (

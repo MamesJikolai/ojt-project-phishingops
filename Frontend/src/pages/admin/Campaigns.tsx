@@ -76,7 +76,7 @@ function Campaigns() {
     }
 
     // Define table columns
-    const columns: ColumnDef<Campaign>[] = [
+    const columns: ColumnDef<Campaign, any>[] = [
         { accessorKey: 'name', header: 'Name' },
         { accessorKey: 'status', header: 'Status' },
         { accessorKey: 'target', header: 'Target' },

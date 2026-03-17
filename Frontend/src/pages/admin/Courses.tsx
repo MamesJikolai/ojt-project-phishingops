@@ -1,16 +1,14 @@
 import Message from '../../components/Message.tsx'
-import SearchBar from '../../components/SearchBar.tsx'
 import CourseCard from '../../components/CourseCard.tsx'
 import { courseList } from '../../assets/courses.ts'
 
 function Courses() {
     return (
         <div className="flex flex-col items-start m-8">
-            <SearchBar />
             <Message text="Courses" />
 
             {/* Cards Container */}
-            <div className="flex flex-row flex-wrap justify-center gap-[32px]">
+            <div className="flex flex-row flex-wrap justify-center gap-[32px] drop-shadow-md">
                 {courseList.map((item, index) => (
                     <CourseCard
                         title={item.title}

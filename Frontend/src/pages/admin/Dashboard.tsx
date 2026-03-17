@@ -1,6 +1,5 @@
 import CourseCard from '../../components/CourseCard.tsx'
 import Message from '../../components/Message.tsx'
-import SearchBar from '../../components/SearchBar.tsx'
 import { courseList } from '../../assets/courses.ts'
 
 import { useMemo } from 'react'
@@ -42,7 +41,6 @@ function Dashboard() {
 
     return (
         <div className="flex flex-col items-start p-8 overflow-x-hidden max-w-full">
-            <SearchBar />
             <Message text="Dashboard" />
 
             <h2>My Courses</h2>

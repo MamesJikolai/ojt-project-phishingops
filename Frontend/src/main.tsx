@@ -2,11 +2,11 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from './Layout.tsx'
+import UserLayout from './UserLayout.tsx'
 import Dashboard from './pages/admin/Dashboard.tsx'
 import Home from './pages/user/Home.tsx'
 import Courses from './pages/admin/Courses.tsx'
 import MyCourses from './pages/user/MyCourses.tsx'
-import Assessments from './pages/admin/Assessments.tsx'
 import Settings from './pages/admin/Settings.tsx'
 import Achievements from './pages/user/Achievements.tsx'
 import Campaigns from './pages/admin/Campaigns.tsx'
@@ -16,32 +16,47 @@ import Account from './pages/admin/Account.tsx'
 import Users from './pages/admin/Users.tsx'
 import LogIn from './pages/LogIn.tsx'
 import PhishingPage from './pages/PhishingPage.tsx'
+import LandingPage from './pages/admin/LandingPage.tsx'
+import Templates from './pages/admin/Templates.tsx'
 
 const router = createBrowserRouter([
     {
         path: '/',
+        element: <UserLayout />,
         children: [
-            {
-                path: '/login',
-                element: <LogIn />,
-            },
             {
                 index: true,
                 element: <PhishingPage />,
             },
+            {
+                path: '/home',
+                element: <Home />,
+            },
+            {
+                path: '/my-courses',
+                element: <MyCourses />,
+            },
         ],
+    },
+    {
+        path: '/login',
+        element: <LogIn />,
     },
     {
         path: '/',
         element: <Layout />,
         children: [
             {
-                path: '/home',
-                element: <Home />,
-            },
-            {
                 path: '/dashboard',
                 element: <Dashboard />,
+            },
+            {
+                path: '/landing-page',
+                element: <LandingPage />,
+            },
+            {
+                path: '/templates',
+                element: <Templates />,
             },
             {
                 path: '/campaigns',
@@ -54,14 +69,6 @@ const router = createBrowserRouter([
             {
                 path: '/courses',
                 element: <Courses />,
-            },
-            {
-                path: '/my-courses',
-                element: <MyCourses />,
-            },
-            {
-                path: '/assessments',
-                element: <Assessments />,
             },
             {
                 path: '/analytics',

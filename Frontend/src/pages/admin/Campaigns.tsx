@@ -1,6 +1,5 @@
 import Message from '../../components/Message.tsx'
-import SearchBar from '../../components/SearchBar.tsx'
-import CampaignModal from '../../components/CampaignModal.tsx' // Updated import
+import CampaignModal from '../../components/CampaignModal.tsx'
 import DefaultButton from '../../components/DefaultButton.tsx'
 
 import { useState, useCallback } from 'react'
@@ -119,7 +118,6 @@ function Campaigns() {
 
     return (
         <div className="flex flex-col items-start m-8">
-            <SearchBar />
             <Message text="Campaigns" />
 
             {/* The Create button now lives here, passing control to the states */}

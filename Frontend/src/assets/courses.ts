@@ -32,43 +32,11 @@ export const courseList = [
         caption: '8 caption',
     },
     {
-        title: '8',
-        caption: '8 caption',
+        title: '9',
+        caption: '9 caption',
     },
     {
-        title: '8',
-        caption: '8 caption',
-    },
-    {
-        title: '8',
-        caption: '8 caption',
-    },
-    {
-        title: '8',
-        caption: '8 caption',
-    },
-    {
-        title: '8',
-        caption: '8 caption',
-    },
-    {
-        title: '8',
-        caption: '8 caption',
-    },
-    {
-        title: '8',
-        caption: '8 caption',
-    },
-    {
-        title: '8',
-        caption: '8 caption',
-    },
-    {
-        title: '8',
-        caption: '8 caption',
-    },
-    {
-        title: '8',
-        caption: '8 caption',
+        title: '10',
+        caption: '10 caption',
     },
 ]

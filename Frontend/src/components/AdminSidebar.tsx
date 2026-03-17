@@ -10,6 +10,18 @@ const navLinksTop = [
         hrefActive: Icons.dashboardActive,
     },
     {
+        title: 'Landing Page',
+        link: '/landing-page',
+        href: Icons.landing,
+        hrefActive: Icons.landingActive,
+    },
+    {
+        title: 'Templates',
+        link: '/templates',
+        href: Icons.template,
+        hrefActive: Icons.templateActive,
+    },
+    {
         title: 'Campaigns',
         link: '/campaigns',
         href: Icons.campaigns,
@@ -76,7 +88,7 @@ function AdminSidebar() {
                     className="flex flex-row items-center w-full font-medium hover:bg-[#E6EDF3] pl-4 py-4 cursor-pointer"
                 >
                     <img
-                        src={Icons.account}
+                        src={Icons.logout}
                         alt="Sign Out"
                         className="w-6 h-6 mr-2"
                     />

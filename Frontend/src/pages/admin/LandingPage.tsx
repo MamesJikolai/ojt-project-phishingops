@@ -1,11 +1,11 @@
 import Message from '../../components/Message'
 
-function Account() {
+function LandingPage() {
     return (
         <div className="flex flex-col items-start m-8">
-            <Message text="Account" />
+            <Message text="Landing Page" />
         </div>
     )
 }
 
-export default Account
+export default LandingPage

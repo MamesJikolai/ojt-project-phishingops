@@ -1,3 +1,5 @@
+import home from './icons/icon-home-default.png'
+import homeActive from './icons/icon-home-active.png'
 import dashboard from './icons/icon-dashboard-default.png'
 import dashboardActive from './icons/icon-dashboard-active.png'
 import campaigns from './icons/icon-campaign-default.png'
@@ -16,8 +18,16 @@ import notifications from './icons/icon-notifications-default.png'
 import notificationsActive from './icons/icon-notifications-active.png'
 import account from './icons/icon-account-default.png'
 import accountActive from './icons/icon-account-active.png'
+import logout from './icons/icon-logout-default.png'
+import logoutActive from './icons/icon-logout-active.png'
+import landing from './icons/icon-landing-default.png'
+import landingActive from './icons/icon-landing-active.png'
+import template from './icons/icon-template-default.png'
+import templateActive from './icons/icon-template-active.png'
 
 export const Icons = {
+    home,
+    homeActive,
     dashboard,
     dashboardActive,
     campaigns,
@@ -36,4 +46,10 @@ export const Icons = {
     notificationsActive,
     account,
     accountActive,
+    logout,
+    logoutActive,
+    landing,
+    landingActive,
+    template,
+    templateActive,
 }

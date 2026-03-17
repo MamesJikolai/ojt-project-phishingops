@@ -1,11 +1,11 @@
 import Message from '../../components/Message'
 
-function Account() {
+function Templates() {
     return (
         <div className="flex flex-col items-start m-8">
-            <Message text="Account" />
+            <Message text="Templates" />
         </div>
     )
 }
 
-export default Account
+export default Templates

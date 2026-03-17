@@ -7,7 +7,7 @@ interface TextFieldProps extends React.TextareaHTMLAttributes<HTMLTextAreaElemen
 function TextField({ label, className = '', ...props }: TextFieldProps) {
     return (
         <label>
-            <span className="font-black text-[#121212]">{label}</span>
+            <span className="font-medium text-[#121212]">{label}</span>
             <textarea
                 className={`text-[#4A4A4A] bg-#F8F9FA border-2 border-[#DDE2E5] focus:outline-[#024C89] rounded-[16px] px-[12px] max-w-2xl py-2 ${className}`}
                 {...props}

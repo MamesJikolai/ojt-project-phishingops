@@ -1,8 +1,12 @@
+import { useState, useCallback } from 'react'
 import DefaultButton from '../../components/DefaultButton'
 import Message from '../../components/Message'
+import TemplateModal from '../../components/TemplateModal'
+import EmailTemplateCard from '../../components/EmailTemplateCard'
 
 const emailTemplate = [
     {
+        id: 1,
         name: 'TEST',
         author: 'IT Support',
         subject: 'Action Required: Your Password Expires in 24 Hours',
@@ -11,6 +15,7 @@ const emailTemplate = [
         created: '03-16-26',
     },
     {
+        id: 2,
         name: 'VPN_ACCESS',
         author: 'IT Helpdesk',
         subject: 'Urgent: VPN Access Verification Required',
@@ -19,6 +24,7 @@ const emailTemplate = [
         created: '03-17-26',
     },
     {
+        id: 3,
         name: 'MAILBOX_LIMIT',
         author: 'System Administrator',
         subject: 'Warning: Mailbox Storage Limit Reached',
@@ -27,6 +33,7 @@ const emailTemplate = [
         created: '03-17-26',
     },
     {
+        id: 4,
         name: 'SECURITY_ALERT',
         author: 'Security Team',
         subject: 'Security Alert: Suspicious Login Attempt Detected',
@@ -35,6 +42,7 @@ const emailTemplate = [
         created: '03-17-26',
     },
     {
+        id: 5,
         name: 'ACCOUNT_UPDATE',
         author: 'HR Department',
         subject: 'Reminder: Update Your Employee Information',
@@ -43,6 +51,7 @@ const emailTemplate = [
         created: '03-17-26',
     },
     {
+        id: 6,
         name: 'PAYROLL_NOTICE',
         author: 'Finance Team',
         subject: 'Important: Payroll Issue Requires Your Attention',
@@ -52,9 +61,58 @@ const emailTemplate = [
     },
 ]
 
+export type Template = {
+    id: number
+    name: string
+    author: string
+    subject: string
+    body: string
+    link: string
+    created: string
+}
+
 function Templates() {
-    const handleCreateTemplate = () => {
-        //
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [modalMode, setModalMode] = useState<'create' | 'view' | 'edit'>(
+        'create'
+    )
+    const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
+        null
+    )
+
+    const openCreateModal = useCallback(() => {
+        setModalMode('create')
+        setSelectedTemplate(null)
+        setIsModalOpen(true)
+    }, [])
+
+    const openViewModal = useCallback((templateData: Template) => {
+        setModalMode('view')
+        setSelectedTemplate(templateData)
+        setIsModalOpen(true)
+    }, [])
+
+    const openEditModal = useCallback((templateData: Template) => {
+        setModalMode('edit')
+        setSelectedTemplate(templateData)
+        setIsModalOpen(true)
+    }, [])
+
+    const handleSaveTemplate = () => {
+        if (modalMode === 'edit') {
+            //
+        } else if (modalMode === 'create') {
+            //
+        }
+    }
+
+    const handleDeleteTemplate = (templateData: Template) => {
+        const confirmDelete = window.confirm(
+            `Are you sure you want to delete "${templateData.name}"?`
+        )
+        if (confirmDelete) {
+            //
+        }
     }
 
     return (
@@ -63,50 +121,29 @@ function Templates() {
 
             <DefaultButton
                 children="New Template"
-                onClick={handleCreateTemplate}
+                onClick={openCreateModal}
                 className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
             />
 
-            <div className="flex flex-row flex-wrap justify-center items-start gap-8 mt-8 mx-auto">
-                {emailTemplate.map((item, index) => (
-                    <div
-                        key={index}
-                        className="flex flex-col gap-2 bg-[#F8F9FA] px-8 py-4 rounded-xl drop-shadow-md"
-                    >
-                        <div className="flex flex-col gap-2 pb-2 border-b-2 border-[#DDE2E5]">
-                            <h3>{item.name}</h3>
-                            <p className="text-[12px]">
-                                From:{' '}
-                                <span className="font-bold">{item.author}</span>
-                            </p>
-                            <div className="bg-[#DDE2E5] text-[14px] h-fit w-[400px] px-4 py-2 rounded-xl">
-                                <p>{item.subject}</p>
-                                <br />
-                                <p className="whitespace-pre-wrap">
-                                    {item.body}
-                                </p>
-                            </div>
-                            <p className="text-[12px]">
-                                Created {item.created}
-                            </p>
-                        </div>
-                        <div className="flex flex-row justify-around text-[12px]">
-                            <DefaultButton
-                                children="View"
-                                className="text-[#17A2B8] hover:text-[#4ECFE0] font-bold"
-                            />
-                            <DefaultButton
-                                children="Edit"
-                                className="text-[#28A745] hover:text-[#45C664] font-bold"
-                            />
-                            <DefaultButton
-                                children="Delete"
-                                className="text-[#DC3545] hover:text-[#FF6B6B] font-bold"
-                            />
-                        </div>
-                    </div>
-                ))}
-            </div>
+            <EmailTemplateCard
+                emailTemplate={emailTemplate}
+                openViewModal={openViewModal}
+                openEditModal={openEditModal}
+                handleDeleteTemplate={handleDeleteTemplate}
+            />
+
+            {isModalOpen && (
+                <TemplateModal
+                    key={
+                        selectedTemplate ? selectedTemplate.id : 'create-modal'
+                    }
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    mode={modalMode}
+                    initialData={selectedTemplate}
+                    onSave={handleSaveTemplate} // 3. Pass the function down to the modal!
+                />
+            )}
         </div>
     )
 }

@@ -18,7 +18,7 @@ function BasicTable<TData>({ data, columns }: BasicTableProps<TData>) {
     })
 
     return (
-        <div className="w-full overflow-x-auto">
+        <div className="text-[14px] w-full overflow-x-auto">
             <table>
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -39,14 +39,33 @@ function BasicTable<TData>({ data, columns }: BasicTableProps<TData>) {
                 <tbody>
                     {table.getRowModel().rows.map((row) => (
                         <tr key={row.id}>
-                            {row.getVisibleCells().map((cell) => (
-                                <td key={cell.id}>
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                </td>
-                            ))}
+                            {row.getVisibleCells().map((cell) => {
+                                let cellClasses =
+                                    'p-2 border-b border-[#DDE2E5] '
+
+                                if (cell.column.id.toLowerCase() === 'role') {
+                                    const cellValue = String(
+                                        cell.getValue()
+                                    ).toLowerCase()
+
+                                    if (cellValue === 'admin') {
+                                        cellClasses +=
+                                            'text-[#00A3AD] font-bold'
+                                    } else if (cellValue === 'hr') {
+                                        cellClasses +=
+                                            'text-[#C5A059] font-bold'
+                                    }
+                                }
+
+                                return (
+                                    <td key={cell.id} className={cellClasses}>
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
+                                    </td>
+                                )
+                            })}
                         </tr>
                     ))}
                 </tbody>

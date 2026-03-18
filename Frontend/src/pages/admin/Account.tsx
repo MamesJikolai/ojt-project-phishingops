@@ -7,28 +7,51 @@ import { users } from '../../assets/users'
 function Account() {
     const userId = localStorage.getItem('userId')
     const user = users.find((u) => u.id === Number(userId))
-    const [username] = useState(user?.username || '')
-    const [role] = useState(user?.role || '')
-    const [firstName, setFirstName] = useState(user?.firstName || '')
-    const [lastName, setLastName] = useState(user?.lastName || '')
-    const [email, setEmail] = useState(user?.email || '')
-    const [organization, setOrganization] = useState(user?.organization || '')
+    const [error, setError] = useState('')
 
-    const handleSubmit = () => {
-        //
+    const [userData, setUserData] = useState({
+        username: user?.username || '',
+        role: user?.role || '',
+        firstName: user?.firstName || '',
+        lastName: user?.lastName || '',
+        email: user?.email || '',
+        organization: user?.organization || '',
+        created: user?.created || '',
+    })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        setUserData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }))
+    }
+
+    const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        setError('')
+
+        if (
+            !userData.firstName ||
+            !userData.lastName ||
+            !userData.email ||
+            !userData.organization
+        ) {
+            setError('All fields required.')
+        }
     }
 
     const handleRoleColor = () => {
-        if (role === 'admin') {
+        if (userData.role === 'admin') {
             return 'bg-[#00A3AD]'
-        } else if (role === 'hr') {
+        } else if (userData.role === 'hr') {
             return 'bg-[#C5A059]'
         }
     }
 
     const handleLogout = () => {
-        localStorage.removeItem('userRole')
         window.location.href = '/home'
+        localStorage.removeItem('userId')
     }
 
     return (
@@ -37,54 +60,69 @@ function Account() {
 
             <div className="flex flex-col gap-4 bg-[#FEF9FA] w-[90%] max-w-[600px] mx-auto px-[48px] py-[32px] rounded-xl drop-shadow-md">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-                    <div className="flex flex-row gap-8">
-                        <p>
-                            USERNAME
+                    <div className="flex flex-row justify-between items-start">
+                        <div className="flex flex-row gap-8">
+                            <p>
+                                USERNAME
+                                <br />
+                                <span className="font-bold">
+                                    {userData.username}
+                                </span>
+                            </p>
+                            <p>
+                                ROLE
+                                <br />
+                                <span
+                                    className={`${handleRoleColor()} text-[#F8F9FA] px-3 py-1 rounded-xl`}
+                                >
+                                    {userData.role}
+                                </span>
+                            </p>
+                        </div>
+                        <p className="text-[12px] text-right">
+                            Created:
                             <br />
-                            <span className="font-bold">{username}</span>
-                        </p>
-                        <p>
-                            ROLE
-                            <br />
-                            <span
-                                className={`${handleRoleColor()} text-[#F8F9FA] px-3 py-1 rounded-xl`}
-                            >
-                                {role}
-                            </span>
+                            {userData.created}
                         </p>
                     </div>
 
                     <div className="flex flex-col gap-6 py-8 border-[#DDE2E5] border-y-1">
+                        {error && <p className="text-rose-500">{error}</p>}
+
                         <TextInput
                             label="First Name"
+                            name="firstName"
                             type="text"
                             placeholder="First Name"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
+                            value={userData.firstName}
+                            onChange={handleChange}
                             className="w-full"
                         />
                         <TextInput
                             label="Last Name"
+                            name="lastName"
                             type="text"
                             placeholder="Last Name"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
+                            value={userData.lastName}
+                            onChange={handleChange}
                             className="w-full"
                         />
                         <TextInput
                             label="Email"
+                            name="email"
                             type="email"
                             placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={userData.email}
+                            onChange={handleChange}
                             className="w-full"
                         />
                         <TextInput
                             label="Organization"
+                            name="organization"
                             type="text"
                             placeholder="Organization"
-                            value={organization}
-                            onChange={(e) => setOrganization(e.target.value)}
+                            value={userData.organization}
+                            onChange={handleChange}
                             className="w-full"
                         />
                         <button
@@ -97,6 +135,7 @@ function Account() {
 
                     <DefaultButton
                         children="Sign Out"
+                        type="button"
                         onClick={handleLogout}
                         className="bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA]"
                     />

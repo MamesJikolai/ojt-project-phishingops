@@ -5,8 +5,6 @@ import { Icons } from '../../assets/icons.ts'
 import { NavLink } from 'react-router-dom'
 
 function Home() {
-    localStorage.removeItem('userRole')
-
     return (
         <>
             <div className="flex flex-col items-start p-8 overflow-x-hidden max-w-full min-h-screen">

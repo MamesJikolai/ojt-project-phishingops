@@ -24,6 +24,12 @@ function PhishingPage({
 }: {
     previewTemplate?: TemplateProps
 }) {
+    useEffect(() => {
+        if (!previewTemplate) {
+            localStorage.removeItem('userId')
+        }
+    }, [previewTemplate])
+
     // Change to DB later
     const [template] = useState(() => {
         if (previewTemplate) return previewTemplate

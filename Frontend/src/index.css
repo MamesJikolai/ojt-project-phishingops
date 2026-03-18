@@ -2,6 +2,7 @@
 
 html {
     font-family: Roboto;
+    color: #121212;
     letter-spacing: 0.03em;
 }
 
@@ -21,7 +22,7 @@ h3 {
 }
 
 table {
-    width: 100%;
+    width: fit-content;
     border-collapse: collapse;
 }
 
@@ -33,6 +34,6 @@ td {
 }
 
 th {
-    background-color: #f8f9fa;
+    background-color: #dde2e5;
     font-weight: bold;
 }

@@ -1,64 +1,59 @@
 import DefaultButton from '../components/DefaultButton.tsx'
 import TextInput from './TextInput.tsx'
-import TextField from './TextField.tsx'
-import type { Campaign } from '../pages/admin/Campaigns.tsx'
+import type { Template } from '../pages/admin/Templates'
 import { useState } from 'react'
+import TextField from './TextField.tsx'
 
-// 2. Add your Campaign type here or import it
-interface CampaignModalProps {
+interface TemplateModalProps {
     isOpen: boolean
     onClose: () => void
     mode: 'create' | 'view' | 'edit'
-    initialData?: Campaign | null
-    onSave: (campaign: Campaign) => void
+    initialData?: Template | null
+    onSave: (template: Template) => void
 }
 
-function CampaignModal({
+function TemplateModal({
     isOpen,
     onClose,
     mode,
     initialData,
     onSave,
-}: CampaignModalProps) {
-    // 3. Initialize state directly with the props!
-    // If initialData is null (like in 'create' mode), it falls back to an empty string.
+}: TemplateModalProps) {
+    // name: string,
+    // author: string,
+    // subject: string,
+    // body: string,
+    // link: string,
+    // created: string,
     const [name, setName] = useState(initialData?.name || '')
-    const [status, setStatus] = useState(
-        initialData?.status?.toLowerCase() || ''
-    )
-    const [date, setDate] = useState(initialData?.date || '')
-    const [target, setTarget] = useState(initialData?.target || '')
+    const [author, setAuthor] = useState(initialData?.author || '')
     const [subject, setSubject] = useState(initialData?.subject || '')
     const [body, setBody] = useState(initialData?.body || '')
+    const [link, setLink] = useState(initialData?.link || '')
     const [error, setError] = useState('')
 
     const isViewOnly = mode === 'view'
-
-    // 4. We completely deleted the useEffect block!
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
 
-        if (!name || !status || !date || !target || !subject || !body) {
+        if (!name || !author || !subject || !body || !link) {
             setError('All fields are required!')
             return
         }
 
-        // 2. Package all the current form states into one object
-        const campaignDataToSave = {
+        const templateDataToSave = {
             id: initialData?.id || Date.now(), // Generate a fake ID if creating
             name,
-            status,
-            date,
-            target,
-            completion: initialData?.completion || '0%', // Keep existing completion or default to 0
+            author,
             subject,
             body,
+            link,
+            created: initialData?.created || new Date().toString(),
         }
 
-        // 3. Send it back up to the parent!
-        onSave(campaignDataToSave)
+        onSave(templateDataToSave)
         onClose()
     }
 
@@ -80,60 +75,29 @@ function CampaignModal({
                 </button>
 
                 <h2>
-                    {mode === 'create' && 'Create Campaign'}
-                    {mode === 'edit' && 'Edit Campaign'}
-                    {mode === 'view' && 'Campaign Details'}
+                    {mode === 'create' && 'Create Template'}
+                    {mode === 'edit' && 'Edit Template'}
+                    {mode === 'view' && 'Template Details'}
                 </h2>
 
                 {error && <p className="text-[#DC3545] text-sm m-0">{error}</p>}
 
-                {/* Make sure your TextInput component accepts the 'disabled' prop! */}
                 <TextInput
                     label="Name"
                     type="text"
-                    placeholder="Campaign Name"
+                    placeholder="Template Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full"
                     disabled={isViewOnly}
                 />
 
-                <label>
-                    <span className="font-bold text-[#121212]">Status</span>
-                    <br />
-                    <select
-                        name="status"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                        disabled={isViewOnly}
-                        className="text-[#4A4A4A] bg-#F8F9FA border-2 border-[#DDE2E5] focus:outline-[#024C89] active:outline-[#024C89] w-full max-w-2xl rounded-[16px] px-4 py-2 disabled:bg-gray-200 disabled:opacity-70"
-                    >
-                        <option value="" disabled hidden>
-                            -- Select an option --
-                        </option>
-                        <option value="Draft">Draft</option>
-                        <option value="Archived">Archived</option>
-                        <option value="Cancelled">Cancelled</option>
-                        <option value="Completed">Completed</option>
-                    </select>
-                </label>
-
                 <TextInput
-                    label="Date"
-                    type="date"
-                    placeholder="Campaign Date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="w-full"
-                    disabled={isViewOnly}
-                />
-
-                <TextInput
-                    label="Target"
+                    label="Author"
                     type="text"
-                    placeholder="Campaign Target"
-                    value={target}
-                    onChange={(e) => setTarget(e.target.value)}
+                    placeholder="Template Author"
+                    value={author}
+                    onChange={(e) => setAuthor(e.target.value)}
                     className="w-full"
                     disabled={isViewOnly}
                 />
@@ -148,14 +112,23 @@ function CampaignModal({
                     disabled={isViewOnly}
                 />
 
-                {/* Make sure TextField accepts 'disabled' */}
                 <TextField
                     label="Body"
                     placeholder="Email Body"
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
                     className="w-full"
-                    rows={6}
+                    disabled={isViewOnly}
+                    rows={10}
+                />
+
+                <TextInput
+                    label="Link"
+                    type="text"
+                    placeholder="Email Link"
+                    value={link}
+                    onChange={(e) => setLink(e.target.value)}
+                    className="w-full"
                     disabled={isViewOnly}
                 />
 
@@ -173,4 +146,4 @@ function CampaignModal({
     )
 }
 
-export default CampaignModal
+export default TemplateModal

@@ -1,10 +1,31 @@
+import { useState, useEffect } from 'react'
 import Message from '../../components/Message.tsx'
 import CourseCard from '../../components/CourseCard.tsx'
-import { courseList } from '../../assets/dummydata/courses.ts'
 import { Icons } from '../../assets/icons.ts'
 import { NavLink } from 'react-router-dom'
+import type { Course } from '../../types/models.ts'
+import { apiService } from '../../services/userService.ts'
 
 function Home() {
+    const [data, setData] = useState<Course[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                setIsLoading(true)
+                const fetchedData = await apiService.getAll<Course>('courses')
+                setData(fetchedData)
+            } catch (err) {
+                console.error('Failed to load courses:', err)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchCourses()
+    }, [])
+
     return (
         <>
             <div className="flex flex-col items-start p-8 overflow-x-hidden max-w-full min-h-screen">
@@ -27,7 +48,7 @@ function Home() {
                 </div>
 
                 <div className="flex flex-row flex-wrap justify-center gap-[16px]">
-                    {courseList.map((item, index) => (
+                    {data.map((item, index) => (
                         <CourseCard
                             title={item.title}
                             caption={item.caption}

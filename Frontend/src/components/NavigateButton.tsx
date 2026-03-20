@@ -7,7 +7,7 @@ interface NavigateButtonProps {
 function NavigateButton({ label, href, customCSS }: NavigateButtonProps) {
     return (
         <a
-            className={`text-[#F8F9FA] bg-[#024C89] hover:bg-[#3572A1] rounded-[8px] mt-[16px] px-[16px] py-[4px] cursor-pointer ${customCSS}`}
+            className={`text-[#F8F9FA] bg-[#024C89] hover:bg-[#3572A1] rounded-[8px] mt-[16px] px-[16px] py-[4px] cursor-pointer ${customCSS}  transition-colors`}
             href={href}
         >
             {label}

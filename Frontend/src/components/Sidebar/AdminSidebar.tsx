@@ -1,7 +1,9 @@
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import MenuItem from './MenuItem.tsx'
 import { Icons } from '../../assets/icons.ts'
-import { accounts } from '../../assets/dummydata/accounts.ts'
+import { apiService } from '../../services/userService.ts' // Make sure this path is correct
+import type { Accounts } from '../../types/models.ts'
 
 const navLinksTop = [
     {
@@ -73,10 +75,39 @@ const navLinksBottom = [
 ]
 
 function AdminSidebar() {
-    const userId = localStorage.getItem('userId')
-    const currentUser = accounts.find((u) => u.id === Number(userId))
-    const userRole = currentUser?.role || ''
+    const [userRole, setUserRole] = useState<string>('')
+    const [isLoading, setIsLoading] = useState(true)
 
+    // Use React Router's navigate function instead of window.location
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            try {
+                const userId = localStorage.getItem('userId')
+                if (!userId) return
+
+                // Fetch the user data dynamically
+                const fetchedAccounts =
+                    await apiService.getAll<Accounts>('accounts')
+                const currentUser = fetchedAccounts.find(
+                    (u) => u.id === Number(userId)
+                )
+
+                if (currentUser) {
+                    setUserRole(currentUser.role)
+                }
+            } catch (error) {
+                console.error('Failed to fetch user role for sidebar:', error)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchUserRole()
+    }, [])
+
+    // Filter links based on the fetched role
     const filteredNavLinksTop = navLinksTop.filter((link) =>
         link.allowedRoles.includes(userRole)
     )
@@ -87,7 +118,15 @@ function AdminSidebar() {
 
     const handleLogout = () => {
         localStorage.removeItem('userId')
-        window.location.href = '/home'
+        // Seamlessly redirect without reloading the whole browser tab
+        navigate('/home')
+    }
+
+    // Optional: Show a skeleton or loading state so the sidebar doesn't flash empty
+    if (isLoading) {
+        return (
+            <div className="w-[240px] h-full bg-[#F8F9FA] animate-pulse"></div>
+        )
     }
 
     return (
@@ -107,7 +146,7 @@ function AdminSidebar() {
 
                 <button
                     onClick={handleLogout}
-                    className="flex flex-row items-center w-full font-medium hover:bg-[#E6EDF3] pl-4 py-4 cursor-pointer"
+                    className="flex flex-row items-center w-full font-medium hover:bg-[#E6EDF3] pl-4 py-4 cursor-pointer transition-colors"
                 >
                     <img
                         src={Icons.logout}

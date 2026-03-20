@@ -1,11 +1,11 @@
-import type { Template } from '../../pages/admin/Templates'
+import type { EmailTemplate } from '../../types/models'
 import DefaultButton from '../DefaultButton'
 
 interface EmailTemplateCardProps {
-    emailTemplate: Template[]
-    openViewModal: (templateData: Template) => void
-    openEditModal: (templateData: Template) => void
-    handleDeleteTemplate: (templateData: Template) => void
+    emailTemplate: EmailTemplate[]
+    openViewModal: (templateData: EmailTemplate) => void
+    openEditModal: (templateData: EmailTemplate) => void
+    handleDeleteTemplate: (templateData: EmailTemplate) => void
 }
 
 function EmailTemplateCard({

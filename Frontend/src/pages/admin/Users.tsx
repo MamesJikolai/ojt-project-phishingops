@@ -1,35 +1,90 @@
-import { useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
-import { userData } from '../../assets/dummydata/userData.ts'
 import Message from '../../components/Message.tsx'
 import TableComponent from '../../components/Tables/TableComponent.tsx'
-
-export type Users = {
-    id: number
-    name: string
-    email: string
-    department: string
-    campaign: string
-    emailStatus: string
-    clicked: string
-    training: string
-    score: number
-}
+import type { User } from '../../types/models.ts'
+import { apiService } from '../../services/userService.ts'
+import UserModal from '../../components/Users/UserModal.tsx'
+import DefaultButton from '../../components/DefaultButton.tsx'
 
 function Users() {
-    const openEditModal = (userData: Users) => {
-        console.log(userData)
-    }
-    const deleteUser = (userData: Users) => {
+    const [data, setData] = useState<User[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
+    const [selectedUser, setSelectedCUser] = useState<User | null>(null)
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                setIsLoading(true)
+                const fetchedData = await apiService.getAll<User>('userData')
+                setData(fetchedData)
+            } catch (err) {
+                console.error('Failed to load user:', err)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchUser()
+    }, [])
+
+    const openCreateModal = useCallback(() => {
+        setModalMode('create')
+        setSelectedCUser(null)
+        setIsModalOpen(true)
+    }, [])
+
+    const openEditModal = useCallback((userData: User) => {
+        setModalMode('edit')
+        setSelectedCUser(userData)
+        setIsModalOpen(true)
+    }, [])
+
+    const handleDeleteUser = async (userData: User) => {
         const confirmDelete = window.confirm(
             `Are you sure you want to delete "${userData.name}"?`
         )
         if (confirmDelete) {
-            //
+            try {
+                await apiService.delete('userData', userData.id)
+
+                setData((prev: User[]) =>
+                    prev.filter((item) => item.id !== userData.id)
+                )
+            } catch (err) {
+                console.error('Failed to delete user:', err)
+            }
         }
     }
 
-    const columns = useMemo<ColumnDef<Users, any>[]>(
+    const handleSaveUser = async (userData: User) => {
+        try {
+            if (modalMode === 'edit') {
+                const updatedUser = await apiService.update<User>(
+                    'userData',
+                    userData.id,
+                    userData
+                )
+
+                setData((prev: User[]) =>
+                    prev.map((item) =>
+                        item.id === updatedUser.id ? updatedUser : item
+                    )
+                )
+            } else if (modalMode === 'create') {
+                const newUser = await apiService.create<User>('users', userData)
+
+                setData((prev: User[]) => [newUser, ...prev])
+            }
+        } catch (err) {
+            console.error('Failed to save user:', err)
+        }
+    }
+
+    const columns = useMemo<ColumnDef<User, any>[]>(
         () => [
             { accessorKey: 'name', header: 'Name' },
             { accessorKey: 'email', header: 'Email' },
@@ -44,7 +99,7 @@ function Users() {
                 meta: { filterVariant: 'select' },
             },
             {
-                accessorKey: 'emailStatus',
+                accessorKey: 'status',
                 header: 'Status',
                 meta: { filterVariant: 'select' },
             },
@@ -79,7 +134,7 @@ function Users() {
                                 Edit
                             </button>
                             <button
-                                onClick={() => deleteUser(userData)}
+                                onClick={() => handleDeleteUser(userData)}
                                 className="hover:text-[#DC3545] text-[#FF6B6B] font-bold cursor-pointer"
                             >
                                 Delete
@@ -95,7 +150,25 @@ function Users() {
     return (
         <div className="flex flex-col items-center m-8">
             <Message text="Users" />
-            <TableComponent data={userData} columns={columns} />
+
+            <DefaultButton
+                className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-4"
+                onClick={openCreateModal}
+                children="Add User"
+            />
+
+            <TableComponent data={data} columns={columns} />
+
+            {isModalOpen && (
+                <UserModal
+                    key={selectedUser ? selectedUser.id : 'create-modal'}
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    mode={modalMode}
+                    initialData={selectedUser}
+                    onSave={handleSaveUser} // 3. Pass the function down to the modal!
+                />
+            )}
         </div>
     )
 }

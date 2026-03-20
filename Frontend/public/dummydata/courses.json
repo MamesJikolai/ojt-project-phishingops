@@ -1,0 +1,127 @@
+[
+    {
+        "id": 1,
+        "title": "Introduction to Programming",
+        "caption": "Learn the basics of coding",
+        "description": "This course covers fundamental programming concepts such as variables, loops, and functions.",
+        "totalLessons": 24,
+        "thumbnail": "https://example.com/images/course-001.jpg",
+        "createdAt": "2025-01-01T10:00:00Z",
+        "updatedAt": "2025-06-01T12:00:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-001",
+                "title": "What is Programming?",
+                "duration": "10:00",
+                "videoUrl": "https://example.com/videos/lesson-001.mp4"
+            },
+            {
+                "id": "lesson-002",
+                "title": "Variables and Data Types",
+                "duration": "15:30",
+                "videoUrl": "https://example.com/videos/lesson-002.mp4"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "title": "Web Development Fundamentals",
+        "caption": "Build your first website",
+        "description": "Learn HTML, CSS, and basic JavaScript to create responsive websites.",
+        "totalLessons": 30,
+        "thumbnail": "https://example.com/images/course-002.jpg",
+        "createdAt": "2025-02-10T08:00:00Z",
+        "updatedAt": "2025-06-10T09:30:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-003",
+                "title": "Introduction to HTML",
+                "duration": "12:45",
+                "videoUrl": "https://example.com/videos/lesson-003.mp4"
+            },
+            {
+                "id": "lesson-004",
+                "title": "Styling with CSS",
+                "duration": "18:20",
+                "videoUrl": "https://example.com/videos/lesson-004.mp4"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "title": "Data Structures and Algorithms",
+        "caption": "Master problem-solving skills",
+        "description": "Understand core data structures and algorithms to ace coding interviews.",
+        "totalLessons": 40,
+        "thumbnail": "https://example.com/images/course-003.jpg",
+        "createdAt": "2025-03-05T11:15:00Z",
+        "updatedAt": "2025-07-01T10:00:00Z",
+        "published": false,
+        "lessons": [
+            {
+                "id": "lesson-005",
+                "title": "Arrays and Lists",
+                "duration": "20:00",
+                "videoUrl": "https://example.com/videos/lesson-005.mp4"
+            },
+            {
+                "id": "lesson-006",
+                "title": "Sorting Algorithms",
+                "duration": "25:10",
+                "videoUrl": "https://example.com/videos/lesson-006.mp4"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "title": "Mobile App Development",
+        "caption": "Create apps for Android and iOS",
+        "description": "Learn how to build cross-platform mobile applications using modern frameworks.",
+        "totalLessons": 28,
+        "thumbnail": "https://example.com/images/course-004.jpg",
+        "createdAt": "2025-04-12T14:00:00Z",
+        "updatedAt": "2025-07-15T16:20:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-007",
+                "title": "Introduction to Mobile Development",
+                "duration": "14:00",
+                "videoUrl": "https://example.com/videos/lesson-007.mp4"
+            },
+            {
+                "id": "lesson-008",
+                "title": "Building Your First App",
+                "duration": "22:30",
+                "videoUrl": "https://example.com/videos/lesson-008.mp4"
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "title": "Database Management Basics",
+        "caption": "Understand how databases work",
+        "description": "Learn SQL, database design, and how to manage data effectively.",
+        "totalLessons": 20,
+        "thumbnail": "https://example.com/images/course-005.jpg",
+        "createdAt": "2025-05-01T09:45:00Z",
+        "updatedAt": "2025-07-20T13:10:00Z",
+        "published": true,
+        "lessons": [
+            {
+                "id": "lesson-009",
+                "title": "Introduction to Databases",
+                "duration": "11:30",
+                "videoUrl": "https://example.com/videos/lesson-009.mp4"
+            },
+            {
+                "id": "lesson-010",
+                "title": "Writing SQL Queries",
+                "duration": "19:40",
+                "videoUrl": "https://example.com/videos/lesson-010.mp4"
+            }
+        ]
+    }
+]

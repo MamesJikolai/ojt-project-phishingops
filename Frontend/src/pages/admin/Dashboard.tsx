@@ -1,15 +1,37 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CourseCard from '../../components/CourseCard.tsx'
 import Message from '../../components/Message.tsx'
 import NavigateButton from '../../components/NavigateButton.tsx'
 import type { ColumnDef } from '@tanstack/react-table'
-import type { Campaign } from './Campaigns.tsx'
 import TableComponent from '../../components/Tables/TableComponent.tsx'
-import { courseList } from '../../assets/dummydata/courses.ts'
-import { campaigns } from '../../assets/dummydata/campaigns.ts'
+import type { Courses } from '../../types/models.ts'
+import type { Campaign } from '../../types/models.ts'
+import { apiService } from '../../services/userService.ts'
 
 function Dashboard() {
-    const [data] = useState<Campaign[]>(campaigns)
+    const [courseData, setCourseData] = useState<Courses[]>([])
+    const [campaignData, setCampaignData] = useState<Campaign[]>([])
+    const [loading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchTemplate = async () => {
+            try {
+                setIsLoading(true)
+                const fetchedCampaignData =
+                    await apiService.getAll<Campaign>('campaigns')
+                const fetchedCoursesData =
+                    await apiService.getAll<Courses>('courses')
+                setCampaignData(fetchedCampaignData)
+                setCourseData(fetchedCoursesData)
+            } catch (err) {
+                console.error('Failed to load data:', err)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchTemplate()
+    }, [])
 
     // Define table columns to pass into table
     const columns: ColumnDef<Campaign, any>[] = [
@@ -69,7 +91,7 @@ function Dashboard() {
 
             <h2>My Courses</h2>
             <div className="flex justify-start w-full overflow-x-auto gap-4 pb-4">
-                {courseList.slice(0, 5).map((item, index) => (
+                {courseData.slice(0, 5).map((item, index) => (
                     <CourseCard
                         title={item.title}
                         caption={item.caption}
@@ -99,7 +121,7 @@ function Dashboard() {
 
             <h2>Campaign</h2>
             <TableComponent
-                data={data.slice(0, 5)}
+                data={campaignData.slice(0, 5)}
                 columns={columns}
                 isPaginated={false}
             />

@@ -1,6 +1,6 @@
 import DefaultButton from '../DefaultButton.tsx'
 import TextInput from '../TextInput.tsx'
-import type { Template } from '../../pages/admin/Templates'
+import type { EmailTemplate } from '../../types/models.ts'
 import { useState } from 'react'
 import TextField from '../TextField.tsx'
 
@@ -8,8 +8,8 @@ interface TemplateModalProps {
     isOpen: boolean
     onClose: () => void
     mode: 'create' | 'view' | 'edit'
-    initialData?: Template | null
-    onSave: (template: Template) => void
+    initialData?: EmailTemplate | null
+    onSave: (template: EmailTemplate) => void
 }
 
 function TemplateModal({
@@ -38,7 +38,7 @@ function TemplateModal({
         e.preventDefault()
         setError('')
 
-        if (!name || !author || !subject || !body || !link) {
+        if (!name || !author || !subject || !body) {
             setError('All fields are required!')
             return
         }

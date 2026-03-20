@@ -1,28 +1,48 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { accounts } from '../assets/dummydata/accounts.ts'
 import TextInput from '../components/TextInput.tsx'
+import { useAuth } from '../context/AuthContext.tsx' // 1. Import your new hook
+import { apiService } from '../services/userService.ts' // 2. Import the API service
+import type { Accounts } from '../types/models.ts'
 
 function LogIn() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [type, setType] = useState('password')
     const [error, setError] = useState('')
-    const navigate = useNavigate()
+    const [isSubmitting, setIsSubmitting] = useState(false) // Added loading state
 
-    const handleLogin = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    const navigate = useNavigate()
+    const { login } = useAuth() // 3. Destructure the login function from context
+
+    const handleLogin = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
+        setIsSubmitting(true)
 
-        const foundUser = accounts.find(
-            (u) => u.username === username && u.password === password
-        )
+        try {
+            // 4. Fetch dynamic data instead of using the static import
+            const fetchedAccounts =
+                await apiService.getAll<Accounts>('accounts')
 
-        if (foundUser) {
-            localStorage.setItem('userId', foundUser.id.toString())
-            navigate('/dashboard')
-        } else {
-            setError('Invalid username or password')
+            // Note: When you move to Django, you will send the username/password
+            // to the backend directly, rather than filtering on the frontend.
+            const foundUser = fetchedAccounts.find(
+                (u) => u.username === username && u.password === password
+            )
+
+            if (foundUser) {
+                // 5. Use the context's login function so the whole app updates instantly
+                await login(foundUser.id.toString())
+                navigate('/dashboard')
+            } else {
+                setError('Invalid username or password')
+            }
+        } catch (err) {
+            console.error('Failed to log in:', err)
+            setError('Server error. Please try again later.')
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
@@ -48,6 +68,7 @@ function LogIn() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className="w-full"
+                    disabled={isSubmitting} // Disable inputs while loading
                 />
 
                 <TextInput
@@ -57,6 +78,7 @@ function LogIn() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full"
+                    disabled={isSubmitting}
                 />
 
                 <TextInput
@@ -65,13 +87,15 @@ function LogIn() {
                     onChange={handleToggle}
                     checked={type === 'text'}
                     className="accent-[#3572A1] mr-1 cursor-pointer"
+                    disabled={isSubmitting}
                 />
 
                 <button
                     type="submit"
-                    className="text-[#FFFAFA] bg-[#024C89] hover:bg-[#3572A1] py-2 cursor-pointer"
+                    disabled={isSubmitting}
+                    className="text-[#FFFAFA] bg-[#024C89] hover:bg-[#3572A1] py-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                    Submit
+                    {isSubmitting ? 'Logging in...' : 'Submit'}
                 </button>
             </form>
         </div>

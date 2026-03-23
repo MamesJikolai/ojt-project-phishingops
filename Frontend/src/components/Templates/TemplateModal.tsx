@@ -19,12 +19,6 @@ function TemplateModal({
     initialData,
     onSave,
 }: TemplateModalProps) {
-    // name: string,
-    // author: string,
-    // subject: string,
-    // body: string,
-    // link: string,
-    // created: string,
     const [name, setName] = useState(initialData?.name || '')
     const [author, setAuthor] = useState(initialData?.author || '')
     const [subject, setSubject] = useState(initialData?.subject || '')
@@ -50,7 +44,7 @@ function TemplateModal({
             subject,
             body,
             link,
-            created: initialData?.created || new Date().toString(),
+            created: initialData?.created || new Date().toLocaleString(),
         }
 
         onSave(templateDataToSave)

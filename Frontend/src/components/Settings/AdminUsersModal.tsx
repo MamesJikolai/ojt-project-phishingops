@@ -3,7 +3,6 @@ import TextInput from '../TextInput.tsx'
 import type { Accounts } from '../../types/models.ts'
 import { useState } from 'react'
 
-// 2. Add your Campaign type here or import it
 interface AdminUsersModalProps {
     isOpen: boolean
     onClose: () => void
@@ -35,7 +34,6 @@ function AdminUserModal({ isOpen, onClose, onSave }: AdminUsersModalProps) {
             return
         }
 
-        // 2. Package all the current form states into one object
         const accountDataToSave = {
             id: Date.now(), // Generate a fake ID if creating
             username,
@@ -45,10 +43,9 @@ function AdminUserModal({ isOpen, onClose, onSave }: AdminUsersModalProps) {
             role,
             email,
             organization,
-            created: new Date().toString(),
+            created: new Date().toLocaleString(),
         }
 
-        // 3. Send it back up to the parent!
         onSave(accountDataToSave)
         onClose()
     }

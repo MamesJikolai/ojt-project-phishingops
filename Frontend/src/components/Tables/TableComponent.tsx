@@ -194,7 +194,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
                 : Array.from(column.getFacetedUniqueValues().keys())
                       .sort()
                       .slice(0, 5000),
-        [column.getFacetedUniqueValues(), filterVariant]
+        [column, filterVariant]
     )
 
     return filterVariant === 'range' ? (
@@ -237,8 +237,11 @@ function Filter({ column }: { column: Column<any, unknown> }) {
             className="w-full min-w-0 border shadow rounded text-[12px] p-0.5"
         >
             <option value="">All</option>
-            {sortedUniqueValues.map((value) => (
-                <option value={value} key={value}>
+            {sortedUniqueValues.map((value, index) => (
+                <option
+                    value={value}
+                    key={`${column.id}-${String(value)}-${index}`}
+                >
                     {value}
                 </option>
             ))}
@@ -246,8 +249,11 @@ function Filter({ column }: { column: Column<any, unknown> }) {
     ) : (
         <>
             <datalist id={column.id + 'list'}>
-                {sortedUniqueValues.map((value: any) => (
-                    <option value={value} key={value} />
+                {sortedUniqueValues.map((value: any, index: number) => (
+                    <option
+                        value={value}
+                        key={`${column.id}-${String(value)}-${index}`}
+                    />
                 ))}
             </datalist>
             <DebouncedInput

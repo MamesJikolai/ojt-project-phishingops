@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import TextInput from '../components/TextInput.tsx'
 import { useAuth } from '../context/AuthContext.tsx' // 1. Import your new hook
 import { apiService } from '../services/userService.ts' // 2. Import the API service
-import type { Accounts } from '../types/models.ts'
 
 function LogIn() {
     const [username, setUsername] = useState('')
@@ -21,26 +20,38 @@ function LogIn() {
         setIsSubmitting(true)
 
         try {
-            // 4. Fetch dynamic data instead of using the static import
-            const fetchedAccounts =
-                await apiService.getAll<Accounts>('accounts')
+            const response = await apiService.login({ username, password })
 
-            // Note: When you move to Django, you will send the username/password
-            // to the backend directly, rather than filtering on the frontend.
-            const foundUser = fetchedAccounts.find(
-                (u) => u.username === username && u.password === password
-            )
+            // Grab the raw user data from the response
+            const fetchedUser = response.user
 
-            if (foundUser) {
-                // 5. Use the context's login function so the whole app updates instantly
-                await login(foundUser.id.toString())
-                navigate('/dashboard')
-            } else {
-                setError('Invalid username or password')
+            // Derive the role based on Django's flags
+            let derivedRole = 'user'
+            if (fetchedUser.is_superuser) {
+                derivedRole = 'admin'
+            } else if (fetchedUser.is_staff) {
+                derivedRole = 'hr'
             }
-        } catch (err) {
+
+            // Inject the role into a new user object
+            const userWithRole = {
+                ...fetchedUser,
+                role: derivedRole,
+            }
+
+            // 4. Pass the UPDATED user object to your context
+            login(userWithRole)
+
+            navigate('/dashboard')
+        } catch (err: any) {
             console.error('Failed to log in:', err)
-            setError('Server error. Please try again later.')
+
+            // Catch specific errors from Django (e.g., "Invalid username or password")
+            if (err.response?.data?.error) {
+                setError(err.response.data.error)
+            } else {
+                setError('Server error. Please try again later.')
+            }
         } finally {
             setIsSubmitting(false)
         }

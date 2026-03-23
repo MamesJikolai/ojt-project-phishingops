@@ -17,7 +17,9 @@ export default function getCellClasses(cell: any) {
         if (cellValue === 'active')
             return `${baseBadge} bg-cyan-100 text-cyan-800`
         if (cellValue === 'draft')
-            return `${baseBadge} bg-gray-100 text-gray-800`
+            return `${baseBadge} bg-purple-100 text-purple-800`
+        if (cellValue === 'scheduled')
+            return `${baseBadge} bg-yellow-100 text-yellow-800`
     } else if (columnId === 'emailstatus') {
         if (cellValue === 'sent')
             return `${baseBadge} bg-green-100 text-green-800`
@@ -31,7 +33,8 @@ export default function getCellClasses(cell: any) {
         if (Number(cellValue) >= 70 && Number(cellValue) < 80)
             return `${baseBadge} bg-yellow-100 text-yellow-800`
         if (Number(cellValue) >= 80)
-            return `${baseBadge} bg-green-100 text-green-800`
+            return `${baseBadge} bg-green-100 text-green-800
+        `
     }
 
     return ''

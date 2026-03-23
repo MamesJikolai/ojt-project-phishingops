@@ -5,6 +5,7 @@ import TableComponent from '../Tables/TableComponent'
 import type { Accounts } from '../../types/models'
 import { apiService } from '../../services/userService'
 import AdminUserModal from './AdminUsersModal'
+import { formatDate } from '../../utils/formatters'
 
 function AdminUsers() {
     const [data, setData] = useState<Accounts[]>([])
@@ -16,8 +17,7 @@ function AdminUsers() {
         const fetchAccount = async () => {
             try {
                 setIsLoading(true)
-                const fetchedData =
-                    await apiService.getAll<Accounts>('accounts')
+                const fetchedData = await apiService.getAll<Accounts>('users') // Change to acconts url
                 setData(fetchedData)
             } catch (err) {
                 console.error('Failed to load accounts:', err)
@@ -32,7 +32,7 @@ function AdminUsers() {
     const handleSaveAccount = async (accountData: Accounts) => {
         try {
             const newAccount = await apiService.create<Accounts>(
-                'accounts',
+                'users',
                 accountData
             )
 
@@ -44,16 +44,23 @@ function AdminUsers() {
 
     const columns: ColumnDef<Accounts, any>[] = [
         { accessorKey: 'username', header: 'Username' },
-        { accessorKey: 'firstName', header: 'First Name' },
-        { accessorKey: 'lastName', header: 'Last Name' },
+        { accessorKey: 'first_name', header: 'First Name' },
+        { accessorKey: 'last_name', header: 'Last Name' },
         {
-            accessorKey: 'role',
+            id: 'role',
             header: 'Role',
+            accessorFn: (row) => {
+                if (row.is_superuser && row.is_staff) return 'Admin'
+                if (!row.is_superuser && row.is_staff) return 'HR'
+                return 'Standard' // Fallback for regular users (is_staff=false)
+            },
             meta: { filterVariant: 'select' },
         },
-        { accessorKey: 'email', header: 'Email' },
-        { accessorKey: 'organization', header: 'Organization' },
-        { accessorKey: 'created', header: 'Created' },
+        {
+            accessorKey: 'date_joined',
+            header: 'Created',
+            cell: (info) => formatDate(info.getValue() as string),
+        },
     ]
 
     return (
@@ -80,7 +87,7 @@ function AdminUsers() {
                     key="create-modal"
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    onSave={handleSaveAccount} // 3. Pass the function down to the modal!
+                    onSave={handleSaveAccount}
                 />
             )}
         </div>

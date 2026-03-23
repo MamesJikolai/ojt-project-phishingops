@@ -7,6 +7,7 @@ import TableComponent from '../../components/Tables/TableComponent.tsx'
 import type { Course } from '../../types/models.ts'
 import type { Campaign } from '../../types/models.ts'
 import { apiService } from '../../services/userService.ts'
+import { formatDate } from '../../utils/formatters.ts'
 
 function Dashboard() {
     const [courseData, setCourseData] = useState<Course[]>([])
@@ -42,14 +43,19 @@ function Dashboard() {
             meta: { filterVariant: 'select' },
         },
         {
-            accessorKey: 'target',
+            accessorKey: 'total_targets',
             header: 'Target',
-            meta: { filterVariant: 'select' },
+            enableColumnFilter: false,
         },
-        { accessorKey: 'date', header: 'Date', enableColumnFilter: false },
         {
-            accessorKey: 'completion',
-            header: 'Completion',
+            accessorKey: 'created_at',
+            header: 'Created',
+            enableColumnFilter: false,
+            cell: (info) => formatDate(info.getValue() as string),
+        },
+        {
+            accessorKey: 'click_rate',
+            header: 'Click Rate',
             enableColumnFilter: false,
             cell: (info) => {
                 // Since your data type is already a number, we can just grab it directly!
@@ -99,7 +105,7 @@ function Dashboard() {
                     {courseData.slice(0, 5).map((item, index) => (
                         <CourseCard
                             title={item.title}
-                            caption={item.caption}
+                            caption={item.description}
                             key={index}
                         />
                     ))}

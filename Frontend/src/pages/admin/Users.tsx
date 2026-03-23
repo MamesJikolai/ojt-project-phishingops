@@ -6,6 +6,7 @@ import type { User } from '../../types/models.ts'
 import { apiService } from '../../services/userService.ts'
 import UserModal from '../../components/Users/UserModal.tsx'
 import DefaultButton from '../../components/DefaultButton.tsx'
+import { formatDate } from '../../utils/formatters.ts'
 
 function Users() {
     const [data, setData] = useState<User[]>([])
@@ -19,7 +20,7 @@ function Users() {
         const fetchUser = async () => {
             try {
                 setIsLoading(true)
-                const fetchedData = await apiService.getAll<User>('userData')
+                const fetchedData = await apiService.getAll<User>('targets')
                 setData(fetchedData)
             } catch (err) {
                 console.error('Failed to load user:', err)
@@ -45,7 +46,7 @@ function Users() {
 
     const handleDeleteUser = async (userData: User) => {
         const confirmDelete = window.confirm(
-            `Are you sure you want to delete "${userData.name}"?`
+            `Are you sure you want to delete "${userData.full_name}"?`
         )
         if (confirmDelete) {
             try {
@@ -86,7 +87,7 @@ function Users() {
 
     const columns = useMemo<ColumnDef<User, any>[]>(
         () => [
-            { accessorKey: 'name', header: 'Name' },
+            { accessorKey: 'full_name', header: 'Name' },
             { accessorKey: 'email', header: 'Email' },
             {
                 accessorKey: 'department',
@@ -94,27 +95,30 @@ function Users() {
                 meta: { filterVariant: 'select' },
             },
             {
-                accessorKey: 'campaign',
+                accessorKey: 'campaign_name',
                 header: 'Campaign',
                 meta: { filterVariant: 'select' },
             },
             {
-                accessorKey: 'status',
-                header: 'Status',
-                meta: { filterVariant: 'select' },
+                accessorKey: 'email_sent_at',
+                header: 'Email Sent',
+                enableColumnFilter: false,
+                cell: (info) => formatDate(info.getValue() as string),
             },
             {
-                accessorKey: 'clicked',
-                header: 'Clicked?',
-                meta: { filterVariant: 'select' },
+                accessorKey: 'link_clicked_at',
+                header: 'Email Clicked',
+                enableColumnFilter: false,
+                cell: (info) => formatDate(info.getValue() as string),
             },
             {
-                accessorKey: 'training',
-                header: 'Training',
-                meta: { filterVariant: 'select' },
+                accessorKey: 'lms_completed_at',
+                header: 'LMS Completed',
+                enableColumnFilter: false,
+                cell: (info) => formatDate(info.getValue() as string),
             },
             {
-                accessorKey: 'score',
+                accessorKey: 'quiz_score',
                 header: 'Score',
                 enableColumnFilter: false,
             },

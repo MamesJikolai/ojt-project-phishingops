@@ -6,7 +6,8 @@ import DefaultButton from '../../components/DefaultButton.tsx'
 import TableComponent from '../../components/Tables/TableComponent.tsx'
 import type { Campaign } from '../../types/models.ts'
 import { apiService } from '../../services/userService.ts'
-import { useAuth } from '../../context/AuthContext.tsx' // 1. Import your Auth hook!
+import { useAuth } from '../../context/AuthContext.tsx'
+import { formatDate } from '../../utils/formatters.ts'
 
 function Campaigns() {
     // 2. Grab the logged-in user directly from context
@@ -105,27 +106,44 @@ function Campaigns() {
                 accessorKey: 'status',
                 header: 'Status',
                 meta: { filterVariant: 'select' },
+                // Optional: Capitalize the status (e.g., "running" -> "Running")
+                cell: (info) => (
+                    <span className="capitalize">
+                        {info.getValue() as string}
+                    </span>
+                ),
             },
             {
-                accessorKey: 'target',
-                header: 'Target',
-                meta: { filterVariant: 'select' },
+                accessorKey: 'total_targets', // Changed from 'target'
+                header: 'Targets',
+                enableColumnFilter: false,
             },
             {
-                accessorKey: 'template',
+                accessorKey: 'email_template_name', // Changed from 'template'
                 header: 'Template',
+                cell: (info) =>
+                    info.getValue() || (
+                        <span className="text-gray-400 italic">None</span>
+                    ),
             },
-            { accessorKey: 'date', header: 'Date', enableColumnFilter: false },
             {
-                accessorKey: 'completion',
-                header: 'Completion',
+                accessorKey: 'created_at', // Changed from 'date'
+                header: 'Created',
+                enableColumnFilter: false,
+                cell: (info) => formatDate(info.getValue() as string),
+            },
+            {
+                accessorKey: 'click_rate', // Changed from 'completion'
+                header: 'Click Rate',
                 enableColumnFilter: false,
                 cell: (info) => {
                     const numericValue = info.getValue() as number
-                    let barColor = 'bg-[#28A745]'
-                    if (numericValue < 30) {
-                        barColor = 'bg-[#DC3545]'
-                    } else if (numericValue < 70) {
+                    // We inverted the colors here!
+                    // High click rate = Bad (Red), Low click rate = Good (Green)
+                    let barColor = 'bg-[#DC3545]'
+                    if (numericValue <= 20) {
+                        barColor = 'bg-[#28A745]'
+                    } else if (numericValue <= 40) {
                         barColor = 'bg-[#FFC107]'
                     }
 
@@ -152,10 +170,29 @@ function Campaigns() {
                     return (
                         <div className="flex flex-row gap-2 text-[12px]">
                             <button
-                                onClick={handleLaunchCampaign}
-                                className="text-[#F8F9FA] hover:bg-[#45C664] bg-[#28A745] px-2 rounded-md py-1 font-bold cursor-pointer"
+                                onClick={async () => {
+                                    try {
+                                        await apiService.launchCampaign(
+                                            campaignData.id
+                                        )
+                                        // Optional: Refresh the data or update the local state to show it is running
+                                        alert('Campaign launched successfully!')
+                                    } catch (err: any) {
+                                        alert(
+                                            err.response?.data?.error ||
+                                                'Failed to launch.'
+                                        )
+                                    }
+                                }}
+                                disabled={
+                                    campaignData.status.toLowerCase() !==
+                                    'draft'
+                                } // Only allow drafting
+                                className="text-[#F8F9FA] hover:bg-[#45C664] bg-[#28A745] px-2 rounded-md py-1 font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                ▶︎ Launch
+                                {campaignData.status.toLowerCase() === 'running'
+                                    ? 'Running'
+                                    : '▶︎ Launch'}
                             </button>
                             <button
                                 onClick={() => openEditModal(campaignData)}

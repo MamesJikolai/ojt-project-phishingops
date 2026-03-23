@@ -20,10 +20,12 @@ function TemplateModal({
     onSave,
 }: TemplateModalProps) {
     const [name, setName] = useState(initialData?.name || '')
-    const [author, setAuthor] = useState(initialData?.author || '')
+    const [author, setAuthor] = useState(initialData?.created_by || '')
+    const [sender_name, setSenderName] = useState(
+        initialData?.sender_name || ''
+    )
     const [subject, setSubject] = useState(initialData?.subject || '')
-    const [body, setBody] = useState(initialData?.body || '')
-    const [link, setLink] = useState(initialData?.link || '')
+    const [body_html, setBody] = useState(initialData?.body_html || '')
     const [error, setError] = useState('')
 
     const isViewOnly = mode === 'view'
@@ -32,7 +34,7 @@ function TemplateModal({
         e.preventDefault()
         setError('')
 
-        if (!name || !author || !subject || !body) {
+        if (!name || !author || !sender_name || !subject || !body_html) {
             setError('All fields are required!')
             return
         }
@@ -41,10 +43,10 @@ function TemplateModal({
             id: initialData?.id || Date.now(), // Generate a fake ID if creating
             name,
             author,
+            sender_name,
             subject,
-            body,
-            link,
-            created: initialData?.created || new Date().toLocaleString(),
+            body_html,
+            created_at: initialData?.created_at || new Date().toLocaleString(),
         }
 
         onSave(templateDataToSave)
@@ -97,6 +99,16 @@ function TemplateModal({
                 />
 
                 <TextInput
+                    label="Sender"
+                    type="text"
+                    placeholder="Sender Name"
+                    value={sender_name}
+                    onChange={(e) => setSenderName(e.target.value)}
+                    className="w-full"
+                    disabled={isViewOnly}
+                />
+
+                <TextInput
                     label="Subject"
                     type="text"
                     placeholder="Email Subject"
@@ -109,21 +121,11 @@ function TemplateModal({
                 <TextField
                     label="Body"
                     placeholder="Email Body"
-                    value={body}
+                    value={body_html}
                     onChange={(e) => setBody(e.target.value)}
                     className="w-full"
                     disabled={isViewOnly}
                     rows={10}
-                />
-
-                <TextInput
-                    label="Link"
-                    type="text"
-                    placeholder="Email Link"
-                    value={link}
-                    onChange={(e) => setLink(e.target.value)}
-                    className="w-full"
-                    disabled={isViewOnly}
                 />
 
                 {/* Hide the submit button completely if we are just viewing */}

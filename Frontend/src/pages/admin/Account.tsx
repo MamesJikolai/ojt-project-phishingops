@@ -1,62 +1,26 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Message from '../../components/Message'
 import TextInput from '../../components/TextInput'
 import DefaultButton from '../../components/DefaultButton'
-import type { Accounts } from '../../types/models'
 import { apiService } from '../../services/userService'
+import { useAuth } from '../../context/AuthContext'
 
 function Account() {
-    const [loading, setIsLoading] = useState(true)
+    const { user, login, logout } = useAuth() // 1. Grab user data and functions from context
+    const navigate = useNavigate()
+
     const [error, setError] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
+    // 2. Pre-fill state with context data using Django's snake_case variable names
     const [userData, setUserData] = useState({
-        id: 0,
-        username: '',
-        role: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        organization: '',
-        created: '',
+        first_name: user?.first_name || '',
+        last_name: user?.last_name || '',
+        email: user?.email || '',
+        // organization: '', // Note: Django's default User model lacks this field!
     })
-
-    useEffect(() => {
-        const fetchCurrentAccount = async () => {
-            try {
-                setIsLoading(true)
-
-                const fetchedData =
-                    await apiService.getAll<Accounts>('accounts')
-
-                const userId = localStorage.getItem('userId')
-                const currentUser = fetchedData.find(
-                    (u) => u.id === Number(userId)
-                )
-
-                if (currentUser) {
-                    setUserData({
-                        id: currentUser.id,
-                        username: currentUser.username || '',
-                        role: currentUser.role || '',
-                        firstName: currentUser.firstName || '',
-                        lastName: currentUser.lastName || '',
-                        email: currentUser.email || '',
-                        organization: currentUser.organization || '',
-                        created: currentUser.created || '',
-                    })
-                } else {
-                    setError('User account not found.')
-                }
-            } catch (err) {
-                console.error('Failed to load account:', err)
-                setError('Failed to load account details.')
-            } finally {
-                setIsLoading(false)
-            }
-        }
-
-        fetchCurrentAccount()
-    }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -69,46 +33,47 @@ function Account() {
     const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
+        setSuccessMessage('')
 
-        if (
-            !userData.firstName ||
-            !userData.lastName ||
-            !userData.email ||
-            !userData.organization
-        ) {
-            setError('All fields are required.')
+        if (!userData.first_name || !userData.last_name || !userData.email) {
+            setError('First name, last name, and email are required.')
             return
         }
 
-        // Example of how to actually save the data using your service
         try {
-            // Uncomment when your update function is ready
-            // await apiService.update('accounts', userData.id, userData)
-            alert('Account updated successfully!')
+            setIsSubmitting(true)
+
+            // 3. Send the PATCH request to Django
+            const updatedUser = await apiService.updateMe(userData)
+
+            // 4. Update the global context so the whole app knows the new name!
+            login(updatedUser)
+
+            setSuccessMessage('Account updated successfully!')
         } catch (err) {
-            setError('Failed to save changes.')
+            console.error('Failed to save changes:', err)
+            setError('Failed to save changes. Please try again.')
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
     const handleRoleColor = () => {
-        if (userData.role === 'admin') {
-            return 'bg-[#00A3AD]'
-        } else if (userData.role === 'hr') {
-            return 'bg-[#C5A059]'
-        }
+        if (user?.role === 'admin') return 'bg-[#00A3AD]'
+        if (user?.role === 'hr') return 'bg-[#C5A059]'
+        if (user?.is_staff) return 'bg-[#00A3AD]' // Fallback for Django standard staff
         return 'bg-gray-400'
     }
 
     const handleLogout = () => {
-        localStorage.removeItem('userId')
-        window.location.href = '/home'
+        // 5. Use context logout and React Router navigate
+        logout()
+        navigate('/home')
     }
 
-    if (loading) {
-        return (
-            <div className="m-8 text-gray-500">Loading account details...</div>
-        )
-    }
+    // Since AuthContext acts as the gatekeeper, 'user' is guaranteed to exist here
+    // But we can add a fallback just in case.
+    if (!user) return null
 
     return (
         <div className="flex flex-col items-start m-8">
@@ -122,46 +87,55 @@ function Account() {
                                 USERNAME
                                 <br />
                                 <span className="font-bold">
-                                    {userData.username}
+                                    {user.username}
                                 </span>
                             </p>
                             <p>
                                 ROLE
                                 <br />
                                 <span
-                                    className={`${handleRoleColor()} text-[#F8F9FA] px-3 py-1 rounded-xl`}
+                                    className={`${handleRoleColor()} text-[#F8F9FA] px-3 py-1 rounded-xl uppercase`}
                                 >
-                                    {userData.role}
+                                    {user.role ||
+                                        (user.is_staff ? 'Admin' : 'User')}
                                 </span>
                             </p>
                         </div>
-                        <p className="text-[12px] text-right">
+                        {/* Assuming date_joined is added to your AuthUser interface */}
+                        {/* <p className="text-[12px] text-right">
                             Created:
                             <br />
-                            {userData.created}
-                        </p>
+                            {new Date(user.date_joined).toLocaleDateString()}
+                        </p> */}
                     </div>
 
                     <div className="flex flex-col gap-6 py-8 border-[#DDE2E5] border-y-[1px]">
                         {error && <p className="text-rose-500">{error}</p>}
+                        {successMessage && (
+                            <p className="text-emerald-600 font-medium">
+                                {successMessage}
+                            </p>
+                        )}
 
                         <TextInput
                             label="First Name"
-                            name="firstName"
+                            name="first_name" // Updated to match Django
                             type="text"
                             placeholder="First Name"
-                            value={userData.firstName}
+                            value={userData.first_name}
                             onChange={handleChange}
                             className="w-full"
+                            disabled={isSubmitting}
                         />
                         <TextInput
                             label="Last Name"
-                            name="lastName"
+                            name="last_name" // Updated to match Django
                             type="text"
                             placeholder="Last Name"
-                            value={userData.lastName}
+                            value={userData.last_name}
                             onChange={handleChange}
                             className="w-full"
+                            disabled={isSubmitting}
                         />
                         <TextInput
                             label="Email"
@@ -171,28 +145,22 @@ function Account() {
                             value={userData.email}
                             onChange={handleChange}
                             className="w-full"
-                        />
-                        <TextInput
-                            label="Organization"
-                            name="organization"
-                            type="text"
-                            placeholder="Organization"
-                            value={userData.organization}
-                            onChange={handleChange}
-                            className="w-full"
+                            disabled={isSubmitting}
                         />
 
                         <DefaultButton
-                            children="Save Changes"
+                            children={
+                                isSubmitting ? 'Saving...' : 'Save Changes'
+                            }
                             type="submit"
-                            className="text-[#F8F9FA] bg-[#024C89] hover:bg-[#3572A1]"
+                            disabled={isSubmitting}
+                            className="text-[#F8F9FA] bg-[#024C89] hover:bg-[#3572A1] disabled:opacity-50"
                         />
                     </div>
 
                     <DefaultButton
                         children="Change Password"
                         type="button"
-                        // onClick={handleLogout}
                         className="text-[#024C89] border-2 border-[#024C89] hover:bg-[#024C89] hover:text-[#F8F9FA]"
                     />
 

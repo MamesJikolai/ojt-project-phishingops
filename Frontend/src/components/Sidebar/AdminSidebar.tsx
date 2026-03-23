@@ -73,7 +73,7 @@ const navLinksBottom = [
 ]
 
 function AdminSidebar() {
-    const { user } = useAuth()
+    const { user, logout } = useAuth()
     const userRole = user?.role || ''
     const navigate = useNavigate()
 
@@ -87,7 +87,7 @@ function AdminSidebar() {
     )
 
     const handleLogout = () => {
-        localStorage.removeItem('userId')
+        logout()
         // Seamlessly redirect without reloading the whole browser tab
         navigate('/home')
     }

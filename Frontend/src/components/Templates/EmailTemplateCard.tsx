@@ -15,24 +15,41 @@ function EmailTemplateCard({
     handleDeleteTemplate,
 }: EmailTemplateCardProps) {
     return (
-        <div className="flex flex-row flex-wrap justify-center items-start gap-8 mt-8 mx-auto">
+        <div className="flex flex-row flex-wrap justify-center v gap-8 mt-8 mx-auto">
             {emailTemplate.map((item, index) => (
                 <div
                     key={index}
                     className="flex flex-col gap-2 bg-[#F8F9FA] px-8 py-4 rounded-xl drop-shadow-md"
                 >
-                    <div className="flex flex-col gap-2 pb-2 border-b-2 border-[#DDE2E5]">
+                    <div className="flex flex-col gap-2 pb-2 border-b-2 border-[#DDE2E5] grow">
                         <h3>{item.name}</h3>
                         <p className="text-[12px]">
                             From:{' '}
-                            <span className="font-bold">{item.author}</span>
+                            <span className="font-bold">
+                                {item.sender_name}
+                            </span>
                         </p>
-                        <div className="bg-[#DDE2E5] text-[14px] h-fit w-[400px] px-4 py-2 rounded-xl">
-                            <p>{item.subject}</p>
+                        <p className="text-[12px]">
+                            Created By:{' '}
+                            <span className="font-bold">
+                                {item.created_by_username}
+                            </span>
+                        </p>
+                        <div className="bg-[#DDE2E5] text-[14px] grow w-[400px] px-4 py-2 rounded-xl">
+                            <p className="font-bold">{item.subject}</p>
                             <br />
-                            <p className="whitespace-pre-wrap">{item.body}</p>
+                            {/* Updated to use body_html from Django */}
+                            {/* Note: If this contains actual HTML, you might need dangerouslySetInnerHTML, 
+                                but standard text output is safer if it's just raw strings right now */}
+                            <p className="whitespace-pre-wrap">
+                                {item.body_html}
+                            </p>
                         </div>
-                        <p className="text-[12px]">Created {item.created}</p>
+                        {/* Updated to use created_at from Django */}
+                        <p className="text-[12px]">
+                            Created{' '}
+                            {new Date(item.created_at).toLocaleDateString()}
+                        </p>
                     </div>
                     <div className="flex flex-row justify-around text-[12px]">
                         <DefaultButton

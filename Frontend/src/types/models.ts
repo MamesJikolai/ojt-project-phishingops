@@ -1,23 +1,34 @@
 export interface Accounts {
     id: number
     username: string
-    password: string
-    role: string
-    firstName: string
-    lastName: string
     email: string
-    organization: string
-    created: string
+    first_name: string
+    last_name: string
+    is_staff: boolean
+    is_superuser: boolean
+    date_joined: string
 }
 
 export interface Campaign {
     id: number
     name: string
+    description: string
     status: string
-    target: string
-    date: string
-    completion: number
-    template: string
+    email_template: number | null
+    email_template_name: string | null
+    assigned_course: number | null
+    assigned_course_title: string | null
+    from_email: string
+    created_by_username: string | null
+    total_targets: number
+    emails_sent: number
+    links_clicked: number
+    lms_completed: number
+    click_rate: number
+    created_at: string
+    launched_at: string | null
+    completed_at: string | null
+    scheduled_at: string | null
 }
 
 export interface Lesson {
@@ -30,7 +41,6 @@ export interface Lesson {
 export interface Course {
     id: number
     title: string
-    caption: string
     description: string
     totalLessons: number
     thumbnailL: string
@@ -43,21 +53,54 @@ export interface Course {
 export interface EmailTemplate {
     id: number
     name: string
-    author: string
     subject: string
-    body: string
-    link: string
-    created: string
+    sender_name: string // Django uses this instead of 'author'
+    body_html: string // Django uses this instead of 'body'
+    created_by?: number // The user ID (read-only from Django)
+    created_by_username?: string // The username (read-only from Django)
+    created_at: string // Django uses this instead of 'created'
+    updated_at?: string
+    // Note: I removed 'link' because it is not in your Django EmailTemplate model.
+    // Usually, the phishing link is injected dynamically when a Campaign is launched.
 }
 
 export interface User {
     id: number
-    name: string
-    email: string
-    department: string
     campaign: string
-    status: string
-    clicked: string
-    training: string
-    score: number
+    campaign_name: string
+    email: string
+    full_name: string
+    department: string
+    position: string
+    token: string
+    phishing_link: string
+    email_sent_at: string | null
+    email_failed: boolean
+    email_error: string | null
+    link_clicked_at: string | null
+    click_ip: string | null
+    lms_started_at: string | null
+    lms_completed_at: string | null
+    quiz_score: number | null
+}
+
+export interface AuthUser {
+    id: number
+    username: string
+    email: string
+    first_name: string
+    last_name: string
+    is_staff: boolean
+    is_superuser: boolean
+    role?: string
+    date_joined: string
+}
+
+export interface Landing {
+    landing_title: string
+    landing_message1: string
+    landing_message2: string
+    landing_button_text: string
+    logo_url: string
+    updated_at: string
 }

@@ -2,92 +2,92 @@
     {
         "id": 1,
         "name": "Phishing Simulation Campaign 1",
-        "status": "Cancelled",
-        "target": "All employees",
-        "date": "2026-01-05",
-        "completion": 0,
-        "template": "TEST"
+        "status": "Draft",
+        "total_targets": 100,
+        "created_at": "2026-01-05",
+        "click_rate": 20,
+        "email_template_name": "TEST"
     },
     {
         "id": 2,
         "name": "Credential Harvest Test Alpha",
         "status": "Completed",
-        "target": "Finance Department",
-        "date": "2026-01-07",
-        "completion": 100,
-        "template": "PAYROLL_NOTICE"
+        "total_targets": 67,
+        "created_at": "2026-01-07",
+        "click_rate": 45,
+        "email_template_name": "PAYROLL_NOTICE"
     },
     {
         "id": 3,
         "name": "VPN Security Drill Q1",
         "status": "Active",
         "target": "Remote Workers",
-        "date": "2026-01-10",
-        "completion": 65,
-        "template": "VPN_ACCESS"
+        "created_at": "2026-01-10",
+        "click_rate": 65,
+        "email_template_name": "VPN_ACCESS"
     },
     {
         "id": 4,
         "name": "Mailbox Phishing Awareness",
         "status": "Completed",
         "target": "All employees",
-        "date": "2026-01-12",
-        "completion": 100,
-        "template": "MAILBOX_LIMIT"
+        "created_at": "2026-01-12",
+        "click_rate": 32,
+        "email_template_name": "MAILBOX_LIMIT"
     },
     {
         "id": 5,
         "name": "Security Alert Simulation A",
         "status": "Active",
         "target": "IT Department",
-        "date": "2026-01-15",
-        "completion": 45,
-        "template": "SECURITY_ALERT"
+        "created_at": "2026-01-15",
+        "click_rate": 50,
+        "email_template_name": "SECURITY_ALERT"
     },
     {
         "id": 6,
-        "name": "HR Update Scam Drill",
+        "name": "HR Upcreated_at Scam Drill",
         "status": "Scheduled",
         "target": "HR Department",
-        "date": "2026-01-18",
-        "completion": 0,
-        "template": "ACCOUNT_UPDATE"
+        "created_at": "2026-01-18",
+        "click_rate": 10,
+        "email_template_name": "ACCOUNT_UPcreated_at"
     },
     {
         "id": 7,
         "name": "Payroll Fraud Awareness B",
         "status": "Completed",
         "target": "Finance Department",
-        "date": "2026-01-20",
-        "completion": 100,
-        "template": "PAYROLL_NOTICE"
+        "created_at": "2026-01-20",
+        "click_rate": 6,
+        "email_template_name": "PAYROLL_NOTICE"
     },
     {
         "id": 8,
         "name": "Password Expiry Simulation X",
         "status": "Active",
         "target": "All employees",
-        "date": "2026-01-22",
-        "completion": 70,
-        "template": "TEST"
+        "created_at": "2026-01-22",
+        "click_rate": 70,
+        "email_template_name": "TEST"
     },
     {
         "id": 9,
         "name": "VPN Breach Drill Beta",
         "status": "Cancelled",
         "target": "Remote Workers",
-        "date": "2026-01-25",
-        "completion": 10,
-        "template": "VPN_ACCESS"
+        "created_at": "2026-01-25",
+        "click_rate": 10,
+        "email_template_name": "VPN_ACCESS"
     },
     {
         "id": 10,
         "name": "Mailbox Overflow Attack",
         "status": "Completed",
         "target": "Support Team",
-        "date": "2026-01-27",
-        "completion": 100,
-        "template": "MAILBOX_LIMIT"
+        "created_at": "2026-01-27",
+        "click_rate": 100,
+        "email_template_name": "MAILBOX_LIMIT"
     },
 
     {
@@ -95,90 +95,90 @@
         "name": "Security Phish Test Gamma",
         "status": "Active",
         "target": "All employees",
-        "date": "2026-02-01",
-        "completion": 55,
-        "template": "SECURITY_ALERT"
+        "created_at": "2026-02-01",
+        "click_rate": 55,
+        "email_template_name": "SECURITY_ALERT"
     },
     {
         "id": 12,
         "name": "Employee Info Scam Drill",
         "status": "Scheduled",
         "target": "HR Department",
-        "date": "2026-02-03",
-        "completion": 0,
-        "template": "ACCOUNT_UPDATE"
+        "created_at": "2026-02-03",
+        "click_rate": 0,
+        "email_template_name": "ACCOUNT_UPcreated_at"
     },
     {
         "id": 13,
         "name": "Finance Fraud Simulation C",
         "status": "Completed",
         "target": "Finance Department",
-        "date": "2026-02-05",
-        "completion": 100,
-        "template": "PAYROLL_NOTICE"
+        "created_at": "2026-02-05",
+        "click_rate": 100,
+        "email_template_name": "PAYROLL_NOTICE"
     },
     {
         "id": 14,
         "name": "Password Reset Attack Drill",
         "status": "Active",
         "target": "All employees",
-        "date": "2026-02-07",
-        "completion": 60,
-        "template": "TEST"
+        "created_at": "2026-02-07",
+        "click_rate": 60,
+        "email_template_name": "TEST"
     },
     {
         "id": 15,
         "name": "VPN Spoof Campaign Delta",
         "status": "Completed",
         "target": "Remote Workers",
-        "date": "2026-02-09",
-        "completion": 100,
-        "template": "VPN_ACCESS"
+        "created_at": "2026-02-09",
+        "click_rate": 100,
+        "email_template_name": "VPN_ACCESS"
     },
     {
         "id": 16,
         "name": "Mailbox Capacity Warning Test",
         "status": "Cancelled",
         "target": "Support Team",
-        "date": "2026-02-11",
-        "completion": 5,
-        "template": "MAILBOX_LIMIT"
+        "created_at": "2026-02-11",
+        "click_rate": 5,
+        "email_template_name": "MAILBOX_LIMIT"
     },
     {
         "id": 17,
         "name": "Account Breach Simulation E",
         "status": "Active",
         "target": "IT Department",
-        "date": "2026-02-13",
-        "completion": 40,
-        "template": "SECURITY_ALERT"
+        "created_at": "2026-02-13",
+        "click_rate": 40,
+        "email_template_name": "SECURITY_ALERT"
     },
     {
         "id": 18,
-        "name": "HR Record Update Phish",
+        "name": "HR Record Upcreated_at Phish",
         "status": "Completed",
         "target": "HR Department",
-        "date": "2026-02-15",
-        "completion": 100,
-        "template": "ACCOUNT_UPDATE"
+        "created_at": "2026-02-15",
+        "click_rate": 100,
+        "email_template_name": "ACCOUNT_UPcreated_at"
     },
     {
         "id": 19,
         "name": "Salary Issue Scam Drill",
         "status": "Scheduled",
         "target": "Finance Department",
-        "date": "2026-02-17",
-        "completion": 0,
-        "template": "PAYROLL_NOTICE"
+        "created_at": "2026-02-17",
+        "click_rate": 0,
+        "email_template_name": "PAYROLL_NOTICE"
     },
     {
         "id": 20,
         "name": "Password Sync Simulation Z",
         "status": "Active",
         "target": "All employees",
-        "date": "2026-02-19",
-        "completion": 75,
-        "template": "TEST"
+        "created_at": "2026-02-19",
+        "click_rate": 75,
+        "email_template_name": "TEST"
     },
 
     {
@@ -186,90 +186,90 @@
         "name": "VPN Access Alert Campaign",
         "status": "Completed",
         "target": "Remote Workers",
-        "date": "2026-02-21",
-        "completion": 100,
-        "template": "VPN_ACCESS"
+        "created_at": "2026-02-21",
+        "click_rate": 100,
+        "email_template_name": "VPN_ACCESS"
     },
     {
         "id": 22,
         "name": "Mailbox Lockout Drill",
         "status": "Cancelled",
         "target": "Support Team",
-        "date": "2026-02-23",
-        "completion": 15,
-        "template": "MAILBOX_LIMIT"
+        "created_at": "2026-02-23",
+        "click_rate": 15,
+        "email_template_name": "MAILBOX_LIMIT"
     },
     {
         "id": 23,
         "name": "Security Alert Test Theta",
         "status": "Active",
         "target": "IT Department",
-        "date": "2026-02-25",
-        "completion": 50,
-        "template": "SECURITY_ALERT"
+        "created_at": "2026-02-25",
+        "click_rate": 50,
+        "email_template_name": "SECURITY_ALERT"
     },
     {
         "id": 24,
-        "name": "Profile Update Scam Alpha",
+        "name": "Profile Upcreated_at Scam Alpha",
         "status": "Completed",
         "target": "HR Department",
-        "date": "2026-02-27",
-        "completion": 100,
-        "template": "ACCOUNT_UPDATE"
+        "created_at": "2026-02-27",
+        "click_rate": 100,
+        "email_template_name": "ACCOUNT_UPcreated_at"
     },
     {
         "id": 25,
         "name": "Payroll Verification Fraud",
         "status": "Scheduled",
         "target": "Finance Department",
-        "date": "2026-03-01",
-        "completion": 0,
-        "template": "PAYROLL_NOTICE"
+        "created_at": "2026-03-01",
+        "click_rate": 0,
+        "email_template_name": "PAYROLL_NOTICE"
     },
     {
         "id": 26,
         "name": "Password Expiry Drill Omega",
         "status": "Active",
         "target": "All employees",
-        "date": "2026-03-03",
-        "completion": 68,
-        "template": "TEST"
+        "created_at": "2026-03-03",
+        "click_rate": 68,
+        "email_template_name": "TEST"
     },
     {
         "id": 27,
         "name": "VPN Security Check Sigma",
         "status": "Completed",
         "target": "Remote Workers",
-        "date": "2026-03-05",
-        "completion": 100,
-        "template": "VPN_ACCESS"
+        "created_at": "2026-03-05",
+        "click_rate": 100,
+        "email_template_name": "VPN_ACCESS"
     },
     {
         "id": 28,
         "name": "Mailbox Upgrade Scam",
         "status": "Active",
         "target": "Support Team",
-        "date": "2026-03-07",
-        "completion": 35,
-        "template": "MAILBOX_LIMIT"
+        "created_at": "2026-03-07",
+        "click_rate": 35,
+        "email_template_name": "MAILBOX_LIMIT"
     },
     {
         "id": 29,
         "name": "Suspicious Login Simulation",
         "status": "Completed",
         "target": "All employees",
-        "date": "2026-03-09",
-        "completion": 100,
-        "template": "SECURITY_ALERT"
+        "created_at": "2026-03-09",
+        "click_rate": 100,
+        "email_template_name": "SECURITY_ALERT"
     },
     {
         "id": 30,
-        "name": "Employee Data Update Drill",
+        "name": "Employee Data Upcreated_at Drill",
         "status": "Scheduled",
         "target": "HR Department",
-        "date": "2026-03-10",
-        "completion": 0,
-        "template": "ACCOUNT_UPDATE"
+        "created_at": "2026-03-10",
+        "click_rate": 0,
+        "email_template_name": "ACCOUNT_UPcreated_at"
     },
 
     {
@@ -277,90 +277,90 @@
         "name": "Finance Alert Phishing Test",
         "status": "Active",
         "target": "Finance Department",
-        "date": "2026-03-11",
-        "completion": 52,
-        "template": "PAYROLL_NOTICE"
+        "created_at": "2026-03-11",
+        "click_rate": 52,
+        "email_template_name": "PAYROLL_NOTICE"
     },
     {
         "id": 32,
         "name": "Password Reset Fraud Campaign",
         "status": "Completed",
         "target": "All employees",
-        "date": "2026-03-12",
-        "completion": 100,
-        "template": "TEST"
+        "created_at": "2026-03-12",
+        "click_rate": 100,
+        "email_template_name": "TEST"
     },
     {
         "id": 33,
         "name": "VPN Spoof Attempt Drill",
         "status": "Cancelled",
         "target": "Remote Workers",
-        "date": "2026-03-13",
-        "completion": 20,
-        "template": "VPN_ACCESS"
+        "created_at": "2026-03-13",
+        "click_rate": 20,
+        "email_template_name": "VPN_ACCESS"
     },
     {
         "id": 34,
         "name": "Mailbox Limit Breach Test",
         "status": "Active",
         "target": "Support Team",
-        "date": "2026-03-14",
-        "completion": 48,
-        "template": "MAILBOX_LIMIT"
+        "created_at": "2026-03-14",
+        "click_rate": 48,
+        "email_template_name": "MAILBOX_LIMIT"
     },
     {
         "id": 35,
         "name": "Account Security Warning Drill",
         "status": "Completed",
         "target": "IT Department",
-        "date": "2026-03-15",
-        "completion": 100,
-        "template": "SECURITY_ALERT"
+        "created_at": "2026-03-15",
+        "click_rate": 100,
+        "email_template_name": "SECURITY_ALERT"
     },
     {
         "id": 36,
         "name": "HR Info Verification Scam",
         "status": "Scheduled",
         "target": "HR Department",
-        "date": "2026-03-16",
-        "completion": 0,
-        "template": "ACCOUNT_UPDATE"
+        "created_at": "2026-03-16",
+        "click_rate": 0,
+        "email_template_name": "ACCOUNT_UPcreated_at"
     },
     {
         "id": 37,
         "name": "Payroll Disruption Simulation",
         "status": "Active",
         "target": "Finance Department",
-        "date": "2026-03-17",
-        "completion": 66,
-        "template": "PAYROLL_NOTICE"
+        "created_at": "2026-03-17",
+        "click_rate": 66,
+        "email_template_name": "PAYROLL_NOTICE"
     },
     {
         "id": 38,
         "name": "Credential Sync Attack Test",
         "status": "Completed",
         "target": "All employees",
-        "date": "2026-03-18",
-        "completion": 100,
-        "template": "TEST"
+        "created_at": "2026-03-18",
+        "click_rate": 100,
+        "email_template_name": "TEST"
     },
     {
         "id": 39,
         "name": "VPN Login Alert Simulation",
         "status": "Active",
         "target": "Remote Workers",
-        "date": "2026-03-19",
-        "completion": 58,
-        "template": "VPN_ACCESS"
+        "created_at": "2026-03-19",
+        "click_rate": 58,
+        "email_template_name": "VPN_ACCESS"
     },
     {
         "id": 40,
         "name": "Mailbox Storage Warning Drill",
         "status": "Completed",
         "target": "Support Team",
-        "date": "2026-03-20",
-        "completion": 100,
-        "template": "MAILBOX_LIMIT"
+        "created_at": "2026-03-20",
+        "click_rate": 100,
+        "email_template_name": "MAILBOX_LIMIT"
     },
 
     {
@@ -368,89 +368,89 @@
         "name": "Security Breach Awareness Test",
         "status": "Cancelled",
         "target": "IT Department",
-        "date": "2026-03-21",
-        "completion": 12,
-        "template": "SECURITY_ALERT"
+        "created_at": "2026-03-21",
+        "click_rate": 12,
+        "email_template_name": "SECURITY_ALERT"
     },
     {
         "id": 42,
-        "name": "Employee Record Update Alert",
+        "name": "Employee Record Upcreated_at Alert",
         "status": "Active",
         "target": "HR Department",
-        "date": "2026-03-22",
-        "completion": 47,
-        "template": "ACCOUNT_UPDATE"
+        "created_at": "2026-03-22",
+        "click_rate": 47,
+        "email_template_name": "ACCOUNT_UPcreated_at"
     },
     {
         "id": 43,
         "name": "Payroll Confirmation Phishing",
         "status": "Completed",
         "target": "Finance Department",
-        "date": "2026-03-23",
-        "completion": 100,
-        "template": "PAYROLL_NOTICE"
+        "created_at": "2026-03-23",
+        "click_rate": 100,
+        "email_template_name": "PAYROLL_NOTICE"
     },
     {
         "id": 44,
         "name": "Password Reset Urgency Drill",
         "status": "Scheduled",
         "target": "All employees",
-        "date": "2026-03-24",
-        "completion": 0,
-        "template": "TEST"
+        "created_at": "2026-03-24",
+        "click_rate": 0,
+        "email_template_name": "TEST"
     },
     {
         "id": 45,
         "name": "VPN Device Verification Test",
         "status": "Active",
         "target": "Remote Workers",
-        "date": "2026-03-25",
-        "completion": 62,
-        "template": "VPN_ACCESS"
+        "created_at": "2026-03-25",
+        "click_rate": 62,
+        "email_template_name": "VPN_ACCESS"
     },
     {
         "id": 46,
         "name": "Mailbox Quota Scam Campaign",
         "status": "Completed",
         "target": "Support Team",
-        "date": "2026-03-26",
-        "completion": 100,
-        "template": "MAILBOX_LIMIT"
+        "created_at": "2026-03-26",
+        "click_rate": 100,
+        "email_template_name": "MAILBOX_LIMIT"
     },
     {
         "id": 47,
         "name": "Unauthorized Login Alert Drill",
         "status": "Active",
         "target": "All employees",
-        "date": "2026-03-27",
-        "completion": 53,
-        "template": "SECURITY_ALERT"
+        "created_at": "2026-03-27",
+        "click_rate": 53,
+        "email_template_name": "SECURITY_ALERT"
     },
     {
         "id": 48,
         "name": "HR Data Validation Simulation",
         "status": "Scheduled",
         "target": "HR Department",
-        "date": "2026-03-28",
-        "completion": 0,
-        "template": "ACCOUNT_UPDATE"
+        "created_at": "2026-03-28",
+        "click_rate": 0,
+        "email_template_name": "ACCOUNT_UPcreated_at"
     },
     {
         "id": 49,
         "name": "Payroll Error Notification Test",
         "status": "Completed",
         "target": "Finance Department",
-        "date": "2026-03-29",
-        "completion": 100,
-        "template": "PAYROLL_NOTICE"
+        "created_at": "2026-03-29",
+        "click_rate": 100,
+        "email_template_name": "PAYROLL_NOTICE"
     },
     {
         "id": 50,
         "name": "Password Expiry Reminder Drill",
         "status": "Active",
         "target": "All employees",
-        "date": "2026-03-30",
-        "completion": 72,
-        "template": "TEST"
+        "created_at": "2026-03-30",
+        "click_rate": 72,
+        "email_template_name": "TEST"
     }
 ]

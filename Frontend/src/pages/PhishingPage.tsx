@@ -1,16 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import DefaultButton from '../components/DefaultButton'
-
-// testing hash
-const tempUser = [
-    {
-        id: 1,
-        name: 'James Mikolai Salazar',
-        email: 'jmsalazar@mymail.mapua.edu.ph',
-        nameHash: '333ed8ce347a9e5c8d12912eb1d8f68e',
-        time: '',
-    },
-]
+import { apiService } from '../services/userService' // Added import
+import type { Landing } from '../types/models'
 
 interface TemplateProps {
     title: string
@@ -24,48 +15,54 @@ function PhishingPage({
 }: {
     previewTemplate?: TemplateProps
 }) {
+    const [template, setTemplate] = useState<TemplateProps | null>(null)
+    const [isLoading, setIsLoading] = useState(!previewTemplate)
+
     useEffect(() => {
-        if (!previewTemplate) {
-            localStorage.removeItem('userId')
+        // If we are just previewing it in the admin panel, don't fetch from DB
+        if (previewTemplate) return
+
+        const fetchTemplate = async () => {
+            try {
+                const data = await apiService.getSingleton<Landing>('settings')
+                setTemplate({
+                    title: data.landing_title,
+                    message1: data.landing_message1,
+                    message2: data.landing_message2,
+                    buttonText: data.landing_button_text,
+                })
+            } catch (err) {
+                console.error('Failed to fetch phishing template', err)
+                // Safe fallback in case the API is down
+                setTemplate({
+                    title: 'Wait! This was a Phishing Simulation',
+                    message1:
+                        "Don't worry, your data is safe. However, a real attacker could have used that link to access your personal details, address, and credit information.",
+                    message2:
+                        'Your security is a priority. Please follow the link below to complete your required phishing awareness module.',
+                    buttonText: 'Go to Training Portal',
+                })
+            } finally {
+                setIsLoading(false)
+            }
         }
+
+        fetchTemplate()
     }, [previewTemplate])
 
-    // Change to DB later
-    const [template] = useState(() => {
-        if (previewTemplate) return previewTemplate
-
-        const savedTemplate = localStorage.getItem('phishingTemplate')
-
-        if (savedTemplate) {
-            return JSON.parse(savedTemplate)
-        }
-
-        return {
-            title: 'Wait! This was a Phishing Simulation',
-            message1:
-                "Don't worry, your data is safe. However, a real attacker could have used that link to access your personal details, address, and credit information.",
-            message2:
-                'Your security is a priority. Please follow the link below to complete your required phishing awareness module.',
-            buttonText: 'Go to Training Portal',
-        }
-    })
-
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search)
-        const userHash = params.get('id')
-        const user = tempUser.find((u) => u.nameHash === userHash)
-
-        if (user) {
-            console.log(user.name, 'has clicked the link!')
-        }
-    }, [])
-
-    // Change to DB later
     const handleNavigate = () => {
-        window.location.href = '/home'
+        window.location.href = '/home' // Update to your actual training portal URL
     }
 
     const displayTemplate = previewTemplate || template
+
+    if (isLoading || !displayTemplate) {
+        return (
+            <div className="h-screen flex items-center justify-center text-gray-500">
+                Loading...
+            </div>
+        )
+    }
 
     return (
         <div

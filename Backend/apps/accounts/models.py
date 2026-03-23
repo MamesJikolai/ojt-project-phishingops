@@ -14,8 +14,8 @@ class User(AbstractUser):
     ROLE_HR    = 'hr'
 
     ROLE_CHOICES = [
-        (ROLE_ADMIN, 'Admin'),
-        (ROLE_HR,    'HR (View Only)'),
+        (ROLE_ADMIN, 'admin'),
+        (ROLE_HR,    'hr'),
     ]
 
     role = models.CharField(

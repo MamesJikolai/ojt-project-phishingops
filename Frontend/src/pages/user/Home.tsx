@@ -56,8 +56,8 @@ function Home() {
                         {data.map((item, index) => (
                             <CourseCard
                                 title={item.title}
-                                caption={item.caption}
-                                key={index}
+                                caption={item.description}
+                                key={item.id || index}
                                 customCSS="drop-shadow-md"
                             />
                         ))}

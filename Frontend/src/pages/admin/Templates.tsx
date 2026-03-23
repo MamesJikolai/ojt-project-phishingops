@@ -21,7 +21,7 @@ function Templates() {
             try {
                 setIsLoading(true)
                 const fetchedData =
-                    await apiService.getAll<EmailTemplate>('emailTemplate')
+                    await apiService.getAll<EmailTemplate>('templates')
                 setData(fetchedData)
             } catch (err) {
                 console.error('Failed to load templates:', err)
@@ -88,13 +88,13 @@ function Templates() {
             )
             if (confirmDelete) {
                 try {
-                    await apiService.delete('campaigns', templateData.id)
+                    await apiService.delete('emailTemplate', templateData.id)
 
                     setData((prev: EmailTemplate[]) =>
                         prev.filter((item) => item.id !== templateData.id)
                     )
                 } catch (err) {
-                    console.error('Failed to delete campaign:', err)
+                    console.error('Failed to delete template:', err)
                 }
             }
         },

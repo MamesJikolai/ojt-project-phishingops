@@ -1,36 +1,44 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Message from '../../components/Message'
 import TextInput from '../../components/TextInput'
 import TextField from '../../components/TextField'
 import DefaultButton from '../../components/DefaultButton'
 import PhishingPage from '../PhishingPage'
+import { apiService } from '../../services/userService'
+import type { Landing } from '../../types/models'
 
 function LandingPage() {
-    // Change to DB later
-    const [template] = useState(() => {
-        const savedTemplate = localStorage.getItem('phishingTemplate')
-
-        if (savedTemplate) {
-            return JSON.parse(savedTemplate)
-        }
-
-        return {
-            title: 'Wait! This was a Phishing Simulation',
-            message1:
-                "Don't worry, your data is safe. However, a real attacker could have used that link to access your personal details, address, and credit information.",
-            message2:
-                'Your security is a priority. Please follow the link below to complete your required phishing awareness module.',
-            buttonText: 'Go to Training Portal',
-        }
-    })
-
-    const [title, setTitle] = useState(template.title)
-    const [message1, setMessage1] = useState(template.message1)
-    const [message2, setMessage2] = useState(template.message2)
-    const [buttonText, setButtonText] = useState(template.buttonText)
+    const [title, setTitle] = useState('')
+    const [message1, setMessage1] = useState('')
+    const [message2, setMessage2] = useState('')
+    const [buttonText, setButtonText] = useState('')
     const [error, setError] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
 
-    const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    // 1. Fetch from Django on load
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                setIsLoading(true)
+                const data = await apiService.getSingleton<Landing>('settings')
+
+                setTitle(data.landing_title || '')
+                setMessage1(data.landing_message1 || '')
+                setMessage2(data.landing_message2 || '')
+                setButtonText(data.landing_button_text || '')
+            } catch (err) {
+                console.error('Failed to load landing page content:', err)
+                setError('Failed to load current settings.')
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchSettings()
+    }, [])
+
+    // 2. Save to Django on submit
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
 
@@ -39,17 +47,29 @@ function LandingPage() {
             return
         }
 
-        const templateData = {
-            title,
-            message1,
-            message2,
-            buttonText,
+        const payload = {
+            landing_title: title,
+            landing_message1: message1,
+            landing_message2: message2,
+            landing_button_text: buttonText,
         }
 
-        // Change to DB later
-        localStorage.setItem('phishingTemplate', JSON.stringify(templateData))
+        try {
+            // Using the singleton method we discussed!
+            await apiService.updateSingleton('settings', payload)
+            alert('Template saved to database!')
+        } catch (err) {
+            console.error('Failed to save template:', err)
+            setError('Failed to save template to the database.')
+        }
+    }
 
-        alert('Template saved!')
+    if (isLoading) {
+        return (
+            <div className="m-8 animate-pulse text-gray-500">
+                Loading editor...
+            </div>
+        )
     }
 
     return (

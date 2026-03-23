@@ -6,70 +6,63 @@ import {
     type ReactNode,
 } from 'react'
 import { apiService } from '../services/userService'
-import type { Accounts } from '../types/models'
+import type { AuthUser } from '../types/models'
 
 interface AuthContextType {
-    user: Accounts | null
+    user: AuthUser | null
     isLoading: boolean
-    login: (userId: string) => Promise<void>
+    login: (userData: AuthUser) => void
     logout: () => void
 }
 
-// 1. Initialize the Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// 2. Create the Provider Component
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<Accounts | null>(null)
+    const [user, setUser] = useState<AuthUser | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
-    // Run THIS once when the app first loads
     useEffect(() => {
         const initializeAuth = async () => {
-            try {
-                const storedUserId = localStorage.getItem('userId')
+            const token = localStorage.getItem('access_token')
 
-                if (storedUserId) {
-                    // Fetch all accounts (Later, change this to a /api/me/ endpoint in Django)
-                    const fetchedData =
-                        await apiService.getAll<Accounts>('accounts')
-                    const foundUser = fetchedData.find(
-                        (u) => u.id === Number(storedUserId)
-                    )
+            if (token) {
+                try {
+                    const userData = await apiService.getMe()
 
-                    if (foundUser) {
-                        setUser(foundUser)
-                    } else {
-                        // Invalid ID in storage, clean it up
-                        localStorage.removeItem('userId')
+                    // Derive the role on page refresh ---
+                    let derivedRole = 'user'
+                    if (userData.is_superuser) {
+                        derivedRole = 'admin'
+                    } else if (userData.is_staff) {
+                        derivedRole = 'hr'
                     }
+
+                    // Inject the role before setting the state
+                    const userWithRole = {
+                        ...userData,
+                        role: derivedRole,
+                    }
+
+                    setUser(userWithRole)
+                } catch (error) {
+                    console.error('Session expired or invalid token:', error)
+                    localStorage.removeItem('access_token')
+                    localStorage.removeItem('refresh_token')
                 }
-            } catch (error) {
-                console.error('Auth initialization failed:', error)
-            } finally {
-                setIsLoading(false)
             }
+            setIsLoading(false)
         }
 
         initializeAuth()
     }, [])
 
-    // 3. Centralize your Login/Logout logic
-    const login = async (userId: string) => {
-        localStorage.setItem('userId', userId)
-        // Force a re-fetch of the user data to populate the context
-        setIsLoading(true)
-        try {
-            const fetchedData = await apiService.getAll<Accounts>('accounts')
-            const foundUser = fetchedData.find((u) => u.id === Number(userId))
-            setUser(foundUser || null)
-        } finally {
-            setIsLoading(false)
-        }
+    const login = (userData: AuthUser) => {
+        setUser(userData)
     }
 
     const logout = () => {
-        localStorage.removeItem('userId')
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
         setUser(null)
     }
 
@@ -80,7 +73,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )
 }
 
-// 4. Create a custom hook for super easy consumption!
+// Add this comment to tell Vite this export is intentionally a hook
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
     const context = useContext(AuthContext)
     if (context === undefined) {

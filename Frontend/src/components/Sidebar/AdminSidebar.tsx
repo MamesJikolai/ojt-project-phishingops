@@ -44,7 +44,7 @@ const navLinksTop = [
         link: '/courses',
         href: Icons.courses,
         hrefActive: Icons.coursesActive,
-        allowedRoles: ['admin'],
+        allowedRoles: ['admin', 'hr'],
     },
     {
         title: 'Analytics & Reports',

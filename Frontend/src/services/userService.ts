@@ -25,6 +25,38 @@ export const apiService = {
     },
 
     /**
+     * READ SINGLE: Fetches a single record by its ID.
+     * @param resource The name of the endpoint (e.g., 'courses')
+     * @param id The ID of the specific record
+     */
+    getOne: async <T>(resource: string, id: string | number): Promise<T> => {
+        if (USE_MOCK_DATA) {
+            console.log(
+                `[MOCK GET] fetching single record ${id} from ${resource}`
+            )
+
+            // Because mock data is usually a single big JSON file array,
+            // we have to fetch the whole array and find the matching ID.
+            const allData = await apiService.getAll<T>(resource)
+
+            const item = (allData as any[]).find(
+                (data) => String(data.id) === String(id)
+            )
+
+            if (!item) {
+                throw new Error(
+                    `Record with id ${id} not found in ${resource} mock data.`
+                )
+            }
+            return item
+        }
+
+        // The real Django API call
+        const response = await apiClient.get<T>(`${resource}/${id}/`)
+        return response.data
+    },
+
+    /**
      * CREATE: Simulates creating a record, or sends a POST to Django.
      */
     create: async <T>(resource: string, data: Partial<T>): Promise<T> => {
@@ -178,14 +210,19 @@ export const apiService = {
      */
     updateSingleton: async <T>(
         resource: string,
-        data: Partial<T>
+        data: Partial<T>,
+        method: 'POST' | 'PUT' | 'PATCH' = 'PATCH'
     ): Promise<T> => {
         if (USE_MOCK_DATA) {
             console.log(`[MOCK PUT] to ${resource}:`, data)
             return data as T
         }
         // Notice there is no /${id}/ here
-        const response = await apiClient.patch<T>(`${resource}/`, data)
+        const response = await apiClient.request<T>({
+            url: `${resource}/`,
+            method: method,
+            data: data,
+        })
         return response.data
     },
 }

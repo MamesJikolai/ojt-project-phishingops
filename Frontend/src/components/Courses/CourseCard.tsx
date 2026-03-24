@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import SmallButton from '../SmallButton'
 import type { Course } from '../../types/models'
@@ -20,6 +21,7 @@ function CourseCard({
     // Grab the logged-in user directly from context
     const { user } = useAuth()
     const userRole = user?.role || ''
+    const navigate = useNavigate()
 
     return (
         <div
@@ -33,15 +35,17 @@ function CourseCard({
                 <p className="text-sm mt-1 grow">{item.caption}</p>
             </div>
 
-            {userRole &&
-                userRole?.toLowerCase() !== 'hr' &&
+            {userRole?.toLowerCase() !== 'hr' &&
                 userRole?.toLowerCase() !== 'admin' && (
-                    <SmallButton className="bg-[#024C89] hover:bg-[#3572A1]">
+                    <SmallButton
+                        onClick={() => navigate(`/courses/${item.id}`)}
+                        className="text-[#F8F9FA] bg-[#024C89] hover:bg-[#3572A1]"
+                    >
                         Start Lesson
                     </SmallButton>
                 )}
 
-            {userRole !== 'hr' && (
+            {userRole === 'admin' && (
                 <div>
                     <SmallButton
                         disabled={item.is_published}
@@ -51,7 +55,7 @@ function CourseCard({
                     </SmallButton>
                     <div className="flex flex-row gap-4">
                         <SmallButton
-                            onClick={openEditModal}
+                            onClick={() => navigate(`/courses/${item.id}`)}
                             className="border-2 border-[#024C89] text-[#024C89] hover:bg-[#024C89] hover:text-[#F8F9FA]"
                         >
                             Edit
@@ -66,9 +70,12 @@ function CourseCard({
                 </div>
             )}
 
-            {userRole !== 'admin' && (
+            {userRole === 'hr' && (
                 <div>
-                    <SmallButton className="bg-[#024C89] text-[#F8F9FA] hover:bg-[#3572A1]">
+                    <SmallButton
+                        onClick={() => navigate(`/courses/${item.id}`)}
+                        className="bg-[#024C89] text-[#F8F9FA] hover:bg-[#3572A1]"
+                    >
                         View
                     </SmallButton>
                 </div>

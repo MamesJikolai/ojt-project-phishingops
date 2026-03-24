@@ -1,44 +1,56 @@
 import { useState } from 'react'
 import DefaultButton from '../DefaultButton'
 import TextInput from '../TextInput'
+import type { SMTPTest } from '../../types/models'
+import { apiService } from '../../services/userService'
 
 function SMTPConfigurationForm() {
-    const [smtpConfig, setSmtpConfig] = useState({
-        host: '',
-        port: '',
-        username: '',
-        password: '',
-        from: '',
-        to: '',
-        tls: false,
-    })
+    const [smtpConfig, setSmtpConfig] = useState<SMTPTest | null>(null)
     const [smtpError, setSmtpError] = useState('')
 
     const handleSmtpConfigChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target
-        setSmtpConfig((prevData) => ({
-            ...prevData,
-            [name]: type === 'checkbox' ? checked : value,
-        }))
+        setSmtpConfig((prev) =>
+            prev
+                ? {
+                      ...prev,
+                      [name]: type === 'checkbox' ? checked : value,
+                  }
+                : null
+        )
     }
 
-    const handleSmtpConfigSubmit = (
+    const handleSmtpConfigSubmit = async (
         e: React.SyntheticEvent<HTMLFormElement>
     ) => {
         e.preventDefault()
         setSmtpError('')
 
+        if (!smtpConfig) return
+
         if (
-            !smtpConfig.host ||
-            !smtpConfig.port ||
-            !smtpConfig.username ||
-            !smtpConfig.password ||
-            !smtpConfig.from ||
-            !smtpConfig.to ||
-            !smtpConfig.tls
+            !smtpConfig?.smtp_host ||
+            !smtpConfig.smtp_port ||
+            !smtpConfig.smtp_user ||
+            !smtpConfig.smtp_password ||
+            !smtpConfig.from_email ||
+            !smtpConfig.to_email ||
+            !smtpConfig.smtp_use_tls
         ) {
             setSmtpError('Fields are required!')
             return
+        }
+
+        try {
+            await apiService.updateSingleton(
+                'settings/smtp-test',
+                smtpConfig,
+                'POST'
+            )
+            alert('SMTP Settings saved successfully!')
+        } catch (err) {
+            console.error('Failed to save SMTP settings:', err)
+            setSmtpError('Failed to save SMTP settings.')
         }
     }
 
@@ -58,18 +70,18 @@ function SMTPConfigurationForm() {
                     <TextInput
                         label="SMTP Host"
                         type="text"
-                        name="host"
+                        name="smtp_host"
                         placeholder="SMTP Host"
-                        value={smtpConfig.host}
+                        value={smtpConfig?.smtp_host || ''}
                         onChange={handleSmtpConfigChange}
                         className="w-full"
                     />
                     <TextInput
                         label="Port"
                         type="text"
-                        name="port"
+                        name="smtp_port"
                         placeholder="Port"
-                        value={smtpConfig.port}
+                        value={smtpConfig?.smtp_port || 587}
                         onChange={handleSmtpConfigChange}
                         className="w-full"
                     />
@@ -78,19 +90,19 @@ function SMTPConfigurationForm() {
                 <TextInput
                     label="SMTP Username"
                     type="text"
-                    name="username"
+                    name="smtp_user"
                     placeholder="SMTP Username"
-                    value={smtpConfig.username}
+                    value={smtpConfig?.smtp_user || ''}
                     onChange={handleSmtpConfigChange}
                     className="w-full"
                 />
 
                 <TextInput
                     label="SMTP Password"
-                    type="text"
-                    name="password"
+                    type="password"
+                    name="smtp_password"
                     placeholder="SMTP Password"
-                    value={smtpConfig.password}
+                    value={smtpConfig?.smtp_password || ''}
                     onChange={handleSmtpConfigChange}
                     className="w-full"
                 />
@@ -99,18 +111,18 @@ function SMTPConfigurationForm() {
                     <TextInput
                         label="From Email"
                         type="text"
-                        name="from"
+                        name="from_email"
                         placeholder="From Email"
-                        value={smtpConfig.from}
+                        value={smtpConfig?.from_email || ''}
                         onChange={handleSmtpConfigChange}
                         className="w-full"
                     />
                     <TextInput
                         label="Send Test To"
                         type="text"
-                        name="to"
+                        name="to_email"
                         placeholder="Send Test To"
-                        value={smtpConfig.to}
+                        value={smtpConfig?.to_email || ''}
                         onChange={handleSmtpConfigChange}
                         className="w-full"
                     />
@@ -119,6 +131,8 @@ function SMTPConfigurationForm() {
                 <TextInput
                     label="Use TLS"
                     type="checkbox"
+                    name="smtp_use_tls"
+                    checked={smtpConfig?.smtp_use_tls || false}
                     onChange={handleSmtpConfigChange}
                     className="accent-[#3572A1] mr-1 cursor-pointer"
                     checkboxClass="font-medium"
@@ -126,7 +140,7 @@ function SMTPConfigurationForm() {
 
                 <DefaultButton
                     type="submit"
-                    children="Save Settings"
+                    children="Send Test Email"
                     className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-center mt-4"
                 />
             </form>

@@ -112,3 +112,23 @@ export interface Landing {
     logo_url: string
     updated_at: string
 }
+
+export interface PlatformConfiguration {
+    platform_name: string
+    platform_base_url: string
+    frontend_url: string
+    default_from_name: string
+    session_expiry_days: number
+    allow_quiz_retake: boolean
+}
+
+export interface SMTPTest {
+    smtp_host: string
+    smtp_port: number
+    smtp_user: string
+    smtp_password: string
+    smtp_use_tls: boolean
+    smtp_use_ssl: boolean
+    from_email: string
+    to_email: string
+}

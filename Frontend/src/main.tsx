@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext.tsx'
+import { AuthProvider, useAuth } from './context/AuthContext.tsx'
 import Layout from './Layout.tsx'
 import UserLayout from './UserLayout.tsx'
 import Dashboard from './pages/admin/Dashboard.tsx'
@@ -18,11 +18,21 @@ import PhishingPage from './pages/PhishingPage.tsx'
 import LandingPage from './pages/admin/LandingPage.tsx'
 import Templates from './pages/admin/Templates.tsx'
 import ProtectedRoute from './components/ProtectedRoute.tsx'
+import CourseDetail from './pages/CourseDetail.tsx'
 
 const router = createBrowserRouter([
     {
         path: '/login',
         element: <LogIn />,
+    },
+    {
+        element: <DynamicLayout />,
+        children: [
+            {
+                path: '/courses/:courseId',
+                element: <CourseDetail />,
+            },
+        ],
     },
     {
         // Pathless route: applies UserLayout and basic auth to all children
@@ -85,7 +95,7 @@ const router = createBrowserRouter([
             {
                 path: '/courses',
                 element: (
-                    <ProtectedRoute allowedRoles={['admin']}>
+                    <ProtectedRoute allowedRoles={['admin', 'hr']}>
                         <Courses />
                     </ProtectedRoute>
                 ),
@@ -117,3 +127,16 @@ createRoot(document.getElementById('root')!).render(
         </AuthProvider>
     </StrictMode>
 )
+
+export default function DynamicLayout() {
+    const { user } = useAuth()
+    const role = user?.role?.toLowerCase() || 'public'
+
+    // If the user is Admin or HR, give them the sidebar layout
+    if (role === 'admin' || role === 'hr') {
+        return <Layout />
+    }
+
+    // Otherwise, give them the standard full-width layout
+    return <UserLayout />
+}

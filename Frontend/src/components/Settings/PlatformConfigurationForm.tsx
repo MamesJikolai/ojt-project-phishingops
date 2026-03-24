@@ -1,44 +1,88 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DefaultButton from '../DefaultButton'
 import TextInput from '../TextInput'
+import type { PlatformConfiguration } from '../../types/models'
+import { apiService } from '../../services/userService'
 
 function PlatformConfigurationForm() {
-    const [platformConfig, setPlatformConfig] = useState({
-        name: '',
-        url: '',
-        senderName: '',
-        sessionExpiry: '',
-        retake: false,
-        saved: '',
-    })
+    const [platformConfig, setPlatformConfig] =
+        useState<PlatformConfiguration | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
     const [platformError, setPlatformError] = useState('')
+
+    useEffect(() => {
+        const fetchSettigns = async () => {
+            try {
+                setIsLoading(true)
+                const fetchedData =
+                    await apiService.getSingleton<PlatformConfiguration>(
+                        'settings'
+                    )
+                setPlatformConfig(fetchedData)
+            } catch (err) {
+                console.error('Failed to load settings:', err)
+                setPlatformError('Failed to load settings from server.')
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchSettigns()
+    }, [])
 
     const handlePlatformConfigChange = (
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const { name, value, type, checked } = e.target
-        setPlatformConfig((prevData) => ({
-            ...prevData,
-            [name]: type === 'checkbox' ? checked : value,
-        }))
+        setPlatformConfig((prev) =>
+            prev
+                ? {
+                      ...prev,
+                      [name]: type === 'checkbox' ? checked : value,
+                  }
+                : null
+        )
     }
 
-    const handlePlatformConfigSubmit = (
+    const handlePlatformConfigSubmit = async (
         e: React.SyntheticEvent<HTMLFormElement>
     ) => {
         e.preventDefault()
         setPlatformError('')
 
+        if (!platformConfig) return
+
         if (
-            !platformConfig.name ||
-            !platformConfig.url ||
-            !platformConfig.senderName ||
-            !platformConfig.sessionExpiry ||
-            !platformConfig.retake
+            !platformConfig.platform_name ||
+            !platformConfig.platform_base_url ||
+            !platformConfig.default_from_name ||
+            !platformConfig.session_expiry_days
         ) {
             setPlatformError('Fields are required!')
             return
         }
+
+        try {
+            await apiService.updateSingleton('settings', platformConfig)
+            alert('Settings saved successfully!')
+        } catch (err) {
+            console.error('Failed to save settings:', err)
+            setPlatformError('Failed to save settings.')
+        }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="p-4 text-gray-500 animate-pulse">
+                Loading settings...
+            </div>
+        )
+    }
+
+    if (!platformConfig) {
+        return (
+            <div className="p-4 text-red-500">No configuration data found.</div>
+        )
     }
 
     return (
@@ -57,9 +101,9 @@ function PlatformConfigurationForm() {
                 <TextInput
                     label="Platform Name"
                     type="text"
-                    name="name"
+                    name="platform_name"
                     placeholder="Platform Name"
-                    value={platformConfig.name}
+                    value={platformConfig.platform_name}
                     onChange={handlePlatformConfigChange}
                     className="w-full"
                 />
@@ -67,9 +111,9 @@ function PlatformConfigurationForm() {
                 <TextInput
                     label="Platform Base URL"
                     type="text"
-                    name="url"
+                    name="platform_base_url"
                     placeholder="Platform Base URL"
-                    value={platformConfig.url}
+                    value={platformConfig.platform_base_url}
                     onChange={handlePlatformConfigChange}
                     className="w-full"
                 />
@@ -77,9 +121,9 @@ function PlatformConfigurationForm() {
                 <TextInput
                     label="Default Sender Display Name"
                     type="text"
-                    name="senderName"
+                    name="default_from_name"
                     placeholder="Default Sender Display Name"
-                    value={platformConfig.senderName}
+                    value={platformConfig.default_from_name}
                     onChange={handlePlatformConfigChange}
                     className="w-full"
                 />
@@ -87,9 +131,9 @@ function PlatformConfigurationForm() {
                 <TextInput
                     label="LMS Session Expiry (days)"
                     type="number"
-                    name="senderName"
-                    placeholder="LMS Session Expiry (days)"
-                    value={platformConfig.senderName}
+                    name="session_expiry_days"
+                    placeholder="30"
+                    value={platformConfig.session_expiry_days.toString()}
                     onChange={handlePlatformConfigChange}
                     className="w-[200px]"
                 />
@@ -97,6 +141,8 @@ function PlatformConfigurationForm() {
                 <TextInput
                     label="Allow Quiz Retake"
                     type="checkbox"
+                    name="allow_quiz_retake"
+                    checked={platformConfig.allow_quiz_retake}
                     onChange={handlePlatformConfigChange}
                     className="accent-[#3572A1] mr-1 cursor-pointer"
                     checkboxClass="font-medium"

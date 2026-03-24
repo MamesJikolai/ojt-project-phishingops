@@ -4,20 +4,28 @@ import TextInput from '../TextInput'
 import type { SMTPTest } from '../../types/models'
 import { apiService } from '../../services/userService'
 
+const initialConfig: SMTPTest = {
+    smtp_host: '',
+    smtp_port: 587,
+    smtp_user: '',
+    smtp_password: '',
+    from_email: '',
+    to_email: '',
+    smtp_use_ssl: false,
+    smtp_use_tls: false,
+}
+
 function SMTPConfigurationForm() {
-    const [smtpConfig, setSmtpConfig] = useState<SMTPTest | null>(null)
+    const [smtpConfig, setSmtpConfig] = useState<SMTPTest>(initialConfig)
     const [smtpError, setSmtpError] = useState('')
 
     const handleSmtpConfigChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target
 
-        setSmtpConfig(
-            (prev) =>
-                ({
-                    ...(prev || {}),
-                    [name]: type === 'checkbox' ? checked : value,
-                }) as SMTPTest
-        )
+        setSmtpConfig((prev) => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value,
+        }))
     }
 
     const handleSmtpConfigSubmit = async (
@@ -34,8 +42,7 @@ function SMTPConfigurationForm() {
             !smtpConfig.smtp_user ||
             !smtpConfig.smtp_password ||
             !smtpConfig.from_email ||
-            !smtpConfig.to_email ||
-            !smtpConfig.smtp_use_tls
+            !smtpConfig.to_email
         ) {
             setSmtpError('Fields are required!')
             return
@@ -47,7 +54,8 @@ function SMTPConfigurationForm() {
                 smtpConfig,
                 'POST'
             )
-            alert('SMTP Settings saved successfully!')
+            alert('SMTP Test Successful!')
+            setSmtpConfig(initialConfig)
         } catch (err) {
             console.error('Failed to save SMTP settings:', err)
             setSmtpError('Failed to save SMTP settings.')
@@ -72,7 +80,7 @@ function SMTPConfigurationForm() {
                         type="text"
                         name="smtp_host"
                         placeholder="SMTP Host"
-                        value={smtpConfig?.smtp_host || ''}
+                        value={smtpConfig?.smtp_host}
                         onChange={handleSmtpConfigChange}
                         className="w-full"
                     />
@@ -81,7 +89,7 @@ function SMTPConfigurationForm() {
                         type="text"
                         name="smtp_port"
                         placeholder="Port"
-                        value={smtpConfig?.smtp_port || 587}
+                        value={smtpConfig?.smtp_port}
                         onChange={handleSmtpConfigChange}
                         className="w-full"
                     />
@@ -92,7 +100,7 @@ function SMTPConfigurationForm() {
                     type="text"
                     name="smtp_user"
                     placeholder="SMTP Username"
-                    value={smtpConfig?.smtp_user || ''}
+                    value={smtpConfig?.smtp_user}
                     onChange={handleSmtpConfigChange}
                     className="w-full"
                 />
@@ -102,7 +110,7 @@ function SMTPConfigurationForm() {
                     type="password"
                     name="smtp_password"
                     placeholder="SMTP Password"
-                    value={smtpConfig?.smtp_password || ''}
+                    value={smtpConfig?.smtp_password}
                     onChange={handleSmtpConfigChange}
                     className="w-full"
                 />
@@ -113,7 +121,7 @@ function SMTPConfigurationForm() {
                         type="text"
                         name="from_email"
                         placeholder="From Email"
-                        value={smtpConfig?.from_email || ''}
+                        value={smtpConfig?.from_email}
                         onChange={handleSmtpConfigChange}
                         className="w-full"
                     />
@@ -122,7 +130,7 @@ function SMTPConfigurationForm() {
                         type="text"
                         name="to_email"
                         placeholder="Send Test To"
-                        value={smtpConfig?.to_email || ''}
+                        value={smtpConfig?.to_email}
                         onChange={handleSmtpConfigChange}
                         className="w-full"
                     />
@@ -132,7 +140,7 @@ function SMTPConfigurationForm() {
                     label="Use TLS"
                     type="checkbox"
                     name="smtp_use_tls"
-                    checked={smtpConfig?.smtp_use_tls || false}
+                    checked={smtpConfig?.smtp_use_tls}
                     onChange={handleSmtpConfigChange}
                     className="accent-[#3572A1] mr-1 cursor-pointer"
                     checkboxClass="font-medium"

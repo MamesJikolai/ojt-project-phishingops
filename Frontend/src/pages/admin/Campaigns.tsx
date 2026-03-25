@@ -223,7 +223,6 @@ function Campaigns() {
         [handleDeleteCampaign, openEditModal]
     ) // Dependencies for useMemo
 
-    // 4. Your perfectly written logic!
     const visibleColumns =
         userRole === 'hr'
             ? columns.filter((col) => col.id !== 'actions')

@@ -27,9 +27,18 @@ function CourseCard({
         <div
             className={`flex flex-col bg-[#F8F9FA] w-[300px] rounded-2xl p-4 shrink-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100 ${customCSS}`}
         >
-            <div className="relative w-full h-[120px] rounded-xl overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#3572A1] to-[#024C89]" />
-            </div>
+            {!item.thumbnail ? (
+                <div className="relative w-full h-[120px] rounded-xl overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#3572A1] to-[#024C89]" />
+                </div>
+            ) : (
+                <img
+                    src={item.thumbnail}
+                    alt={item.title}
+                    className="w-full h-[120px] object-cover"
+                />
+            )}
+
             <div className="flex flex-col grow mt-3">
                 <h3 className="text-[16px]">{item.title}</h3>
                 <p className="text-[12px]">{item.caption}</p>

@@ -6,6 +6,7 @@ import type { Course } from '../types/models'
 import DefaultButton from '../components/DefaultButton'
 import Message from '../components/Message'
 import LessonCard from '../components/Courses/LessonCard'
+import TextInput from '../components/TextInput'
 
 function CourseDetail() {
     const { courseId } = useParams<{ courseId: string }>()
@@ -43,44 +44,42 @@ function CourseDetail() {
 
     return (
         <div className="flex flex-col items-start m-8">
-            {/* Role-Based Content Area */}
-            <div>
-                {/* PUBLIC / USER VIEW (Can take quizzes) */}
-                {/* HR VIEW (Can only view) */}
-                {role === 'hr' && (
-                    <div>
-                        <DefaultButton
-                            onClick={() => navigate('/courses')}
-                            className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-8"
-                        >
-                            Go Back
-                        </DefaultButton>
-                    </div>
-                )}
-                {/* ADMIN VIEW (Can edit) */}
-                {role === 'admin' && (
-                    <div>
-                        <DefaultButton
-                            onClick={() => navigate('/courses')}
-                            className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-8"
-                        >
-                            Go Back
-                        </DefaultButton>
-                    </div>
-                )}
-                {role === 'public' && (
-                    <div>
-                        <DefaultButton
-                            onClick={() => navigate('/home')}
-                            className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-8"
-                        >
-                            Go Back
-                        </DefaultButton>
-                    </div>
-                )}
-            </div>
+            {(role === 'hr' || role === 'admin') && (
+                <DefaultButton
+                    onClick={() => navigate('/courses')}
+                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-8"
+                >
+                    Go Back
+                </DefaultButton>
+            )}
+            {role === 'public' && (
+                <div>
+                    <DefaultButton
+                        onClick={() => navigate('/home')}
+                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] self-start mb-8"
+                    >
+                        Go Back
+                    </DefaultButton>
+                </div>
+            )}
 
-            <div className="bg-gradient-to-br from-[#3572A1] to-[#024C89] w-full h-[200px]"></div>
+            {!course.thumbnail ? (
+                <div className="bg-gradient-to-br from-[#3572A1] to-[#024C89] w-full h-[400px]"></div>
+            ) : (
+                <img
+                    src={course.thumbnail}
+                    alt={course.thumbnail}
+                    className="w-full h-[400px] object-cover"
+                />
+            )}
+
+            <TextInput
+                label="Upload Thumbnail"
+                type="file"
+                accept="image/png, image/jpeg, image/webp, .png, .jpg, .jpeg, .webp"
+                // onChange={(e) => setFile(e.target.files?.[0] || null)}
+                className="w-full cursor-pointer"
+            />
 
             <Message text={course.title} subtitle={course.created_at} />
             <p className="text-justify whitespace-pre-wrap mb-8">

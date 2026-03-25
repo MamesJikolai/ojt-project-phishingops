@@ -1,4 +1,5 @@
 import type { Lesson } from '../../types/models'
+import { getEmbedUrl } from '../../utils/getEmbedUrl'
 
 interface LessonCardProps {
     item: Lesson
@@ -8,6 +9,8 @@ interface LessonCardProps {
 }
 
 function LessonCard({ item, index, isOpen, onToggle }: LessonCardProps) {
+    const embedUrl = getEmbedUrl(item.video_url)
+
     return (
         <div className="bg-[#F8F9FA] rounded-xl px-8 py-6 w-full shadow-sm border border-gray-100">
             {/* Header (Always visible) */}
@@ -35,6 +38,15 @@ function LessonCard({ item, index, isOpen, onToggle }: LessonCardProps) {
                     <p className="text-gray-700 whitespace-pre-wrap">
                         {item.description}
                     </p>
+
+                    <iframe
+                        src={embedUrl}
+                        title="YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                        className="w-[90%] aspect-video mx-auto my-4"
+                    ></iframe>
                 </div>
             </div>
         </div>

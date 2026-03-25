@@ -14,7 +14,9 @@ function TextInput({
     const isCheckbox = props.type === 'checkbox'
 
     return (
-        <label className="flex flex-col w-full">
+        <label
+            className={`flex ${props.type === 'file' && props.accept !== '.csv' ? 'flex-row items-center gap-2 pt-4' : 'flex-col'} w-full`}
+        >
             {!isCheckbox && (
                 <span className="text-[#121212] font-medium">{label}</span>
             )}

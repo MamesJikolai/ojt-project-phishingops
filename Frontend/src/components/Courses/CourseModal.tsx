@@ -32,12 +32,9 @@ function CourseModal({
     // uodated_at: string
 
     const [title, setTitle] = useState(initialData?.title || '')
+    const [caption, setCaption] = useState(initialData?.caption || '')
     const [description, setDescription] = useState(
         initialData?.description?.toLowerCase() || ''
-    )
-    const [thumbnail, setThumbnail] = useState(initialData?.thumbnail || '')
-    const [is_published, setIsPublished] = useState(
-        initialData?.is_published || false
     )
     const [error, setError] = useState('')
 
@@ -54,8 +51,7 @@ function CourseModal({
         const courseDataToSave: Partial<Course> = {
             title,
             description,
-            thumbnail,
-            is_published,
+            caption,
         }
 
         // 3. Send it back up to the parent!
@@ -93,6 +89,15 @@ function CourseModal({
                     placeholder="Course Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    className="w-full"
+                />
+
+                <TextInput
+                    label="Caption"
+                    type="text"
+                    placeholder="Course Caption"
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
                     className="w-full"
                 />
 

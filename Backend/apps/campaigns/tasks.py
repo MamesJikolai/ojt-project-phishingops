@@ -295,3 +295,49 @@ def _launch_sync(campaign_id: int):
         f'Campaign {campaign_id} sync launch — {sent} sent, {failed} failed.'
     )
     return sent, failed, first_error
+
+
+def check_scheduled_campaigns():
+    """
+    Runs every minute via Django-Q2 scheduler.
+    Finds campaigns whose scheduled_at has passed and launches them.
+    """
+    from apps.campaigns.models import Campaign
+    from django_q.tasks import async_task
+
+    now = timezone.now()
+
+    due = Campaign.objects.filter(
+        status=Campaign.STATUS_DRAFT,
+        scheduled_at__isnull=False,
+        scheduled_at__lte=now,
+    )
+
+    for campaign in due:
+        if not campaign.targets.exists():
+            logger.warning(
+                f'Scheduled campaign "{campaign.name}" skipped — no targets.'
+            )
+            continue
+        if not campaign.email_template:
+            logger.warning(
+                f'Scheduled campaign "{campaign.name}" skipped — no email template.'
+            )
+            continue
+        if not campaign.smtp_host or not campaign.smtp_user:
+            logger.warning(
+                f'Scheduled campaign "{campaign.name}" skipped — SMTP not configured.'
+            )
+            continue
+
+        logger.info(f'Launching scheduled campaign: "{campaign.name}"')
+        try:
+            async_task(
+                'apps.campaigns.tasks.launch_campaign_async',
+                campaign.id,
+                task_name=f'launch-campaign-{campaign.id}',
+            )
+        except Exception as e:
+            # Fallback to sync if Django-Q not available
+            logger.warning(f'Django-Q unavailable ({e}), launching synchronously.')
+            _launch_sync(campaign.id)

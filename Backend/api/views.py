@@ -1,4 +1,5 @@
 import csv
+import os
 import io
 import logging
 
@@ -14,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 
 from apps.campaigns.models import (
@@ -428,6 +430,52 @@ class CourseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
+    @action(
+        detail=True,
+        methods=['post'],
+        url_path='upload-thumbnail',
+        parser_classes=[MultiPartParser, FormParser],
+    )
+    def upload_thumbnail(self, request, pk=None):
+        course = self.get_object()
+        thumbnail = request.FILES.get('thumbnail')
+
+        if not thumbnail:
+            return Response(
+                {'error': 'No thumbnail file provided.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Validate extension
+        valid_extensions = ['.jpg', '.jpeg', '.png', '.webp']
+        ext = os.path.splitext(thumbnail.name)[1].lower()
+
+        if ext not in valid_extensions:
+            return Response(
+                {'error': 'Invalid file type. Only JPG, JPEG, PNG, and WEBP are allowed.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Validate MIME type
+        valid_mime_types = ['image/jpeg', 'image/png', 'image/webp']
+        if thumbnail.content_type not in valid_mime_types:
+            return Response(
+                {'error': 'Invalid file content type.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Save
+        course.thumbnail = thumbnail
+        course.save(update_fields=['thumbnail'])
+
+        return Response(
+            {
+                'detail': 'Thumbnail uploaded successfully.',
+                'course_id': course.id,
+                'thumbnail': course.thumbnail.name,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # LMS — Employee-facing (no login, token-gated)

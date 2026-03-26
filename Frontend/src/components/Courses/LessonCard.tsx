@@ -32,7 +32,10 @@ function LessonCard({
 
     return (
         <div className="bg-[#F8F9FA] rounded-xl px-8 py-6 w-full shadow-sm border border-gray-100">
-            <div className="flex flex-row justify-between items-center cursor-pointer">
+            <div
+                onClick={onToggle}
+                className="flex flex-row justify-between items-center cursor-pointer"
+            >
                 {role === 'admin' ? (
                     <>
                         <div

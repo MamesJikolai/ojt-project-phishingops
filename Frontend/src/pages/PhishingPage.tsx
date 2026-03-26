@@ -19,6 +19,22 @@ function PhishingPage({
     const [isLoading, setIsLoading] = useState(!previewTemplate)
 
     useEffect(() => {
+        // If we are just previewing in admin, skip saving a token
+        if (previewTemplate) return
+
+        // Extract the token from the URL query string
+        const queryParams = new URLSearchParams(window.location.search)
+        const token = queryParams.get('token')
+
+        // If a token was found in the URL, save it to localStorage
+        if (token) {
+            localStorage.setItem('lms_token', token)
+            // Optional: You could even remove it from the URL here so the user doesn't copy/share it
+            // window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }, [previewTemplate])
+
+    useEffect(() => {
         // If we are just previewing it in the admin panel, don't fetch from DB
         if (previewTemplate) return
 

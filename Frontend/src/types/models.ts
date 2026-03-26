@@ -20,11 +20,11 @@ export interface Campaign {
     assigned_course: number | null
     assigned_course_title: string
     smtp_host: string
-    smtp_port: number
+    smtp_port: number // 587
     smtp_user: string
     smtp_password?: string
-    smtp_use_tls: boolean
-    smtp_use_ssl: boolean
+    smtp_use_tls: boolean // false
+    smtp_use_ssl: boolean // false
     from_email: string
     scheduled_at: string | null
     created_at: string

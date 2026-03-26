@@ -270,4 +270,23 @@ export const apiService = {
         )
         return response.data // Returns { created: int, skipped: int } based on your Django code
     },
+
+    // Add these alongside your other methods in apiService
+    getCampaignSmtp: async (id: number) => {
+        if (USE_MOCK_DATA) return {}
+        const response = await apiClient.get(`campaigns/${id}/smtp/`)
+        return response.data
+    },
+
+    updateCampaignSmtp: async (id: number, smtpData: any) => {
+        if (USE_MOCK_DATA) {
+            console.log(`[MOCK PATCH] to campaigns/${id}/smtp/:`, smtpData)
+            return smtpData
+        }
+        const response = await apiClient.patch(
+            `campaigns/${id}/smtp/`,
+            smtpData
+        )
+        return response.data
+    },
 }

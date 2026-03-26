@@ -10,7 +10,6 @@ import { useAuth } from '../../context/AuthContext.tsx'
 import { formatDate } from '../../utils/formatters.ts'
 
 function Campaigns() {
-    // Grab the logged-in user directly from context
     const { user } = useAuth()
     const userRole = user?.role || ''
 
@@ -72,34 +71,57 @@ function Campaigns() {
         file: File | null
     ) => {
         try {
+            // 1. Split the data
+            const {
+                smtp_host,
+                smtp_port,
+                smtp_user,
+                smtp_password,
+                smtp_use_ssl,
+                smtp_use_tls,
+                from_email,
+                ...coreData
+            } = campaignData
+
+            const smtpData = {
+                smtp_host,
+                smtp_port,
+                smtp_user,
+                smtp_password,
+                smtp_use_ssl,
+                smtp_use_tls,
+                from_email,
+            }
+
             if (modalMode === 'edit') {
-                // Update the campaign
+                // Update core campaign
                 const updatedCampaign = await apiService.update<Campaign>(
                     'campaigns',
-                    campaignData.id!,
-                    campaignData
+                    coreData.id!,
+                    coreData
+                )
+                // Update SMTP settings
+                await apiService.updateCampaignSmtp(
+                    updatedCampaign.id,
+                    smtpData
                 )
 
-                // If they selected a new file during the edit, upload it
                 if (file) {
                     await apiService.uploadCsv(updatedCampaign.id, file)
                 }
-
-                // Refresh the table to get the updated targets count
                 fetchCampaign()
             } else if (modalMode === 'create') {
-                // Create the campaign
+                // Create core campaign
                 const newCampaign = await apiService.create<Campaign>(
                     'campaigns',
-                    campaignData
+                    coreData
                 )
+                // Update SMTP settings using the newly generated ID
+                await apiService.updateCampaignSmtp(newCampaign.id, smtpData)
 
-                // Immediately upload the CSV using the brand new ID
                 if (file) {
                     await apiService.uploadCsv(newCampaign.id, file)
                 }
-
-                // Refresh the table to get the new campaign with its target count
                 fetchCampaign()
             }
         } catch (err) {
@@ -188,7 +210,6 @@ function Campaigns() {
                                         await apiService.launchCampaign(
                                             campaignData.id
                                         )
-                                        // Optional: Refresh the data or update the local state to show it is running
                                         alert('Campaign launched successfully!')
                                     } catch (err: any) {
                                         alert(

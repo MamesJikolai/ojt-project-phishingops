@@ -107,12 +107,12 @@ function Account() {
                                 </span>
                             </p>
                         </div>
-                        {/* Assuming date_joined is added to your AuthUser interface */}
-                        {/* <p className="text-[12px] text-right">
+
+                        <p className="text-[12px] text-right">
                             Created:
                             <br />
                             {new Date(user.date_joined).toLocaleDateString()}
-                        </p> */}
+                        </p>
                     </div>
 
                     <div className="flex flex-col gap-6 py-8 border-[#DDE2E5] border-y-[1px]">

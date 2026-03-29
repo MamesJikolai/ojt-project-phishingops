@@ -141,9 +141,12 @@ function CourseDetail() {
             await fetchCourse()
             setHasUnsavedChanges(false)
             alert('Course and all lessons saved successfully!')
-        } catch (err) {
-            console.error('Failed to save course details:', err)
-            alert('Failed to save changes. Please try again.')
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                alert(error.response.data.error)
+            } else {
+                alert('An unexpected error occurred. Please try again.')
+            }
         } finally {
             setIsSaving(false)
         }
@@ -237,6 +240,7 @@ function CourseDetail() {
 
     return (
         <div className="flex flex-col items-start gap-4 m-8">
+            {/* Back Button */}
             {(role === 'hr' || role === 'admin') && (
                 <div className="flex flex-row justify-between w-full">
                     <DefaultButton
@@ -267,6 +271,7 @@ function CourseDetail() {
                 </div>
             )}
 
+            {/* Thumbnail */}
             {!course.thumbnail || course.thumbnail.trim() === '' ? (
                 <div className="bg-gradient-to-br from-[#3572A1] to-[#024C89] w-full h-[400px]"></div>
             ) : (
@@ -277,6 +282,7 @@ function CourseDetail() {
                 />
             )}
 
+            {/* Thumbnail Upload */}
             {role === 'admin' && (
                 <CourseDetailsInput
                     label="Upload Thumbnail"
@@ -293,17 +299,24 @@ function CourseDetail() {
                 />
             )}
 
+            {/* Course Details */}
             {role === 'admin' ? (
                 <>
                     <CourseDetailsInput
                         type="text"
                         value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
+                        onChange={(e) => {
+                            setEditTitle(e.target.value)
+                            setHasUnsavedChanges(true)
+                        }}
                         className="font-bold text-4xl text-[#121212] w-full"
                     />
                     <CourseDetailsField
                         value={editDescription}
-                        onChange={(e) => setEditDescription(e.target.value)}
+                        onChange={(e) => {
+                            setEditDescription(e.target.value)
+                            setHasUnsavedChanges(true)
+                        }}
                         className="w-full"
                         rows={8}
                     />
@@ -317,6 +330,7 @@ function CourseDetail() {
                 </>
             )}
 
+            {/* Lesson Cards */}
             <div className="flex flex-col gap-4 w-full">
                 {course.lessons?.map((item, index) => (
                     <LessonCard
@@ -336,6 +350,7 @@ function CourseDetail() {
                 ))}
             </div>
 
+            {/* Add Lesson Button */}
             {role === 'admin' && (
                 <DefaultButton
                     onClick={handleCreateNewLesson}
@@ -345,6 +360,7 @@ function CourseDetail() {
                 </DefaultButton>
             )}
 
+            {/* Save Changes Button */}
             {role === 'admin' && hasUnsavedChanges && (
                 <DefaultButton
                     onClick={handleSaveDetails}

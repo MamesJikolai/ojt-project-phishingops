@@ -54,6 +54,7 @@ function Campaigns() {
         try {
             await apiService.launchCampaign(campaignData.id)
             alert('Campaign launched successfully!')
+            fetchCampaign()
         } catch (err: any) {
             alert(err.response?.data?.error || 'Failed to launch.')
         }
@@ -63,6 +64,7 @@ function Campaigns() {
         try {
             await apiService.pauseCampaign(campaignData.id)
             alert('Campaign paused successfully!')
+            fetchCampaign()
         } catch (err: any) {
             alert(err.response?.data?.error || 'Failed to pause.')
         }
@@ -72,6 +74,7 @@ function Campaigns() {
         try {
             await apiService.completeCampaign(campaignData.id)
             alert('Campaign marked as completed!')
+            fetchCampaign()
         } catch (err: any) {
             alert(err.response?.data?.error || 'Faile to complete.')
         }

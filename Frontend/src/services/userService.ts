@@ -111,8 +111,11 @@ export const apiService = {
     },
 
     pauseCampaign: async (id: number): Promise<void> => {
-        // ... similar logic
         await apiClient.post(`campaigns/${id}/pause/`)
+    },
+
+    completeCampaign: async (id: number): Promise<void> => {
+        await apiClient.post(`campaigns/${id}/complete/`)
     },
 
     /**

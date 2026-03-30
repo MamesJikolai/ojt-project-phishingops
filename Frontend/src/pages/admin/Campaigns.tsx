@@ -68,6 +68,15 @@ function Campaigns() {
         }
     }
 
+    const handleCompleteCampaign = async (campaignData: Campaign) => {
+        try {
+            await apiService.completeCampaign(campaignData.id)
+            alert('Campaign marked as completed!')
+        } catch (err: any) {
+            alert(err.response?.data?.error || 'Faile to complete.')
+        }
+    }
+
     const handleDeleteCampaign = useCallback(async (campaignData: Campaign) => {
         const confirmDelete = window.confirm(
             `Are you sure you want to delete "${campaignData.name}"?`
@@ -151,13 +160,13 @@ function Campaigns() {
     const getCampaignButtonConfig = (status: string) => {
         switch (status.toLowerCase()) {
             case 'running':
-                return { text: 'Pause', disabled: false }
+                return { text: '❚❚ Pause', disabled: false }
             case 'completed':
                 return { text: 'Completed', disabled: true }
             case 'draft':
             case 'paused':
             default:
-                return { text: 'Launch', disabled: false }
+                return { text: '▶︎ Launch', disabled: false }
         }
     }
 
@@ -176,12 +185,12 @@ function Campaigns() {
                 ),
             },
             {
-                accessorKey: 'total_targets', // Changed from 'target'
+                accessorKey: 'total_targets',
                 header: 'Targets',
                 enableColumnFilter: false,
             },
             {
-                accessorKey: 'email_template_name', // Changed from 'template'
+                accessorKey: 'email_template_name',
                 header: 'Template',
                 cell: (info) =>
                     info.getValue() || (
@@ -189,19 +198,19 @@ function Campaigns() {
                     ),
             },
             {
-                accessorKey: 'scheduled_at', // Changed from 'date'
+                accessorKey: 'scheduled_at',
                 header: 'Scheduled',
                 enableColumnFilter: false,
                 cell: (info) => formatDate(info.getValue() as string),
             },
             {
-                accessorKey: 'created_at', // Changed from 'date'
+                accessorKey: 'created_at',
                 header: 'Created',
                 enableColumnFilter: false,
                 cell: (info) => formatDate(info.getValue() as string),
             },
             {
-                accessorKey: 'click_rate', // Changed from 'completion'
+                accessorKey: 'click_rate',
                 header: 'Click Rate',
                 enableColumnFilter: false,
                 cell: (info) => {
@@ -235,7 +244,12 @@ function Campaigns() {
                     const campaignData = info.row.original
                     return (
                         <div className="flex flex-row gap-2 text-[12px]">
-                            <button
+                            <DefaultButton
+                                children={
+                                    getCampaignButtonConfig(
+                                        campaignData.status.toLowerCase()
+                                    ).text
+                                }
                                 onClick={
                                     campaignData.status.toLowerCase() ===
                                     'running'
@@ -249,28 +263,31 @@ function Campaigns() {
                                         campaignData.status.toLowerCase()
                                     ).disabled
                                 }
-                                className="text-[#F8F9FA] hover:bg-[#45C664] bg-[#28A745] px-2 rounded-md py-1 font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {
-                                    getCampaignButtonConfig(
-                                        campaignData.status.toLowerCase()
-                                    ).text
+                                className="text-[#F8F9FA] hover:bg-[#45C664] bg-[#28A745] font-bold px-2! py-1! disabled:opacity-50 disabled:cursor-not-allowed"
+                            />
+                            <DefaultButton
+                                children="Complete"
+                                hidden={
+                                    campaignData.status.toLowerCase() ===
+                                    'completed'
                                 }
-                            </button>
-                            <button
+                                onClick={() =>
+                                    handleCompleteCampaign(campaignData)
+                                }
+                                className="text-[#F8F9FA] hover:bg-[#3572A1] bg-[#024C89] font-bold px-2! py-1!"
+                            />
+                            <DefaultButton
+                                children="Edit"
                                 onClick={() => openEditModal(campaignData)}
-                                className="hover:text-[#17A2B8] text-[#4ECFE0] font-bold cursor-pointer"
-                            >
-                                Edit
-                            </button>
-                            <button
+                                className="hover:text-[#17A2B8] text-[#4ECFE0] font-bold px-2! py-1!"
+                            />
+                            <DefaultButton
+                                children="Delete"
                                 onClick={() =>
                                     handleDeleteCampaign(campaignData)
                                 }
-                                className="hover:text-[#DC3545] text-[#FF6B6B] font-bold cursor-pointer"
-                            >
-                                Delete
-                            </button>
+                                className="hover:text-[#DC3545] text-[#FF6B6B] font-bold px-2! py-1!"
+                            />
                         </div>
                     )
                 },

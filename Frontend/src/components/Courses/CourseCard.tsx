@@ -81,17 +81,16 @@ function CourseCard({
                 </div>
             )}
 
-            {userRole === 'hr' ||
-                (userRole === 'admin' && isDashboard && (
-                    <div>
-                        <SmallButton
-                            onClick={() => navigate(`/courses/${item.id}`)}
-                            className="bg-[#024C89] text-[#F8F9FA] hover:bg-[#3572A1]"
-                        >
-                            View
-                        </SmallButton>
-                    </div>
-                ))}
+            {(userRole === 'hr' || (userRole === 'admin' && isDashboard)) && (
+                <div>
+                    <SmallButton
+                        onClick={() => navigate(`/courses/${item.id}`)}
+                        className="bg-[#024C89] text-[#F8F9FA] hover:bg-[#3572A1]"
+                    >
+                        View
+                    </SmallButton>
+                </div>
+            )}
         </div>
     )
 }

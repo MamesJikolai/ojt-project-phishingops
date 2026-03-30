@@ -18,6 +18,9 @@ function PhishingPage({
     const [template, setTemplate] = useState<TemplateProps | null>(null)
     const [isLoading, setIsLoading] = useState(!previewTemplate)
 
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
+
     useEffect(() => {
         // If we are just previewing in admin, skip saving a token
         if (previewTemplate) return

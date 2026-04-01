@@ -19,6 +19,21 @@ router.register(
     views.LessonViewSet,
     basename='course-lesson',
 )
+router.register(
+    r'courses/(?P<course_pk>[^/.]+)/quiz',
+    views.QuizViewSet,
+    basename='course-quiz',
+)
+router.register(
+    r'quizzes/(?P<quiz_pk>[^/.]+)/questions',
+    views.QuizQuestionViewSet,
+    basename='quiz-question',
+)
+router.register(
+    r'questions/(?P<question_pk>[^/.]+)/choices',
+    views.QuizChoiceViewSet,
+    basename='question-choice',
+)
 
 urlpatterns = [
     # ── Router-generated URLs ──────────────────────────────────────────────────

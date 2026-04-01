@@ -31,6 +31,9 @@ from .serializers import (
     CampaignTargetSerializer, CampaignSMTPSerializer,
     CourseListSerializer, CourseDetailSerializer, CoursePublicSerializer,
     LessonSerializer,
+    QuizSerializer, QuizWriteSerializer,
+    QuizQuestionSerializer, QuizQuestionWriteSerializer,
+    QuizChoiceSerializer,
     LessonSerializer,
     QuizSerializer,
     LessonProgressSerializer, QuizAttemptSerializer,
@@ -541,6 +544,103 @@ class LessonViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         course = Course.objects.get(pk=self.kwargs['course_pk'])
         serializer.save(course=course)
+
+
+# ── Quiz ViewSet ──────────────────────────────────────────────────────────────
+
+class QuizViewSet(viewsets.ModelViewSet):
+    """
+    CRUD for quizzes — one quiz per course.
+
+    GET    /api/v1/courses/<course_pk>/quiz/       — get the quiz for a course
+    POST   /api/v1/courses/<course_pk>/quiz/       — create quiz (admin only)
+    PATCH  /api/v1/courses/<course_pk>/quiz/<id>/  — update quiz (admin only)
+    DELETE /api/v1/courses/<course_pk>/quiz/<id>/  — delete quiz (admin only)
+    """
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    def get_permissions(self):
+        if self.action in ('create', 'update', 'partial_update', 'destroy'):
+            return [IsAdminRole()]
+        return [AllowAny()]
+
+    def get_queryset(self):
+        return Quiz.objects.filter(
+            course_id=self.kwargs['course_pk']
+        ).prefetch_related('questions__choices')
+
+    def get_serializer_class(self):
+        if self.action in ('create', 'update', 'partial_update'):
+            return QuizWriteSerializer
+        return QuizSerializer
+
+    def perform_create(self, serializer):
+        course = Course.objects.get(pk=self.kwargs['course_pk'])
+        serializer.save(course=course)
+
+
+# ── QuizQuestion ViewSet ───────────────────────────────────────────────────────
+
+class QuizQuestionViewSet(viewsets.ModelViewSet):
+    """
+    CRUD for questions nested under a quiz.
+
+    GET    /api/v1/quizzes/<quiz_pk>/questions/          — list questions
+    POST   /api/v1/quizzes/<quiz_pk>/questions/          — add question (admin only)
+    GET    /api/v1/quizzes/<quiz_pk>/questions/<id>/     — retrieve question
+    PATCH  /api/v1/quizzes/<quiz_pk>/questions/<id>/     — update (admin only)
+    DELETE /api/v1/quizzes/<quiz_pk>/questions/<id>/     — delete (admin only)
+    """
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    def get_permissions(self):
+        if self.action in ('create', 'update', 'partial_update', 'destroy'):
+            return [IsAdminRole()]
+        return [IsAdminOrHRReadOnly()]
+
+    def get_queryset(self):
+        return QuizQuestion.objects.filter(
+            quiz_id=self.kwargs['quiz_pk']
+        ).prefetch_related('choices').order_by('order')
+
+    def get_serializer_class(self):
+        if self.action in ('create', 'update', 'partial_update'):
+            return QuizQuestionWriteSerializer
+        return QuizQuestionSerializer
+
+    def perform_create(self, serializer):
+        quiz = Quiz.objects.get(pk=self.kwargs['quiz_pk'])
+        serializer.save(quiz=quiz)
+
+
+# ── QuizChoice ViewSet ─────────────────────────────────────────────────────────
+
+class QuizChoiceViewSet(viewsets.ModelViewSet):
+    """
+    CRUD for choices nested under a question.
+
+    GET    /api/v1/questions/<question_pk>/choices/          — list choices
+    POST   /api/v1/questions/<question_pk>/choices/          — add choice (admin only)
+    GET    /api/v1/questions/<question_pk>/choices/<id>/     — retrieve
+    PATCH  /api/v1/questions/<question_pk>/choices/<id>/     — update (admin only)
+    DELETE /api/v1/questions/<question_pk>/choices/<id>/     — delete (admin only)
+    """
+    serializer_class  = QuizChoiceSerializer
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    def get_permissions(self):
+        if self.action in ('create', 'update', 'partial_update', 'destroy'):
+            return [IsAdminRole()]
+        return [IsAdminOrHRReadOnly()]
+
+    def get_queryset(self):
+        return QuizChoice.objects.filter(
+            question_id=self.kwargs['question_pk']
+        ).order_by('order')
+
+    def perform_create(self, serializer):
+        question = QuizQuestion.objects.get(pk=self.kwargs['question_pk'])
+        serializer.save(question=question)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -52,6 +52,29 @@ class QuizChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model  = QuizChoice
         fields = ['id', 'text', 'is_correct', 'order']
+        extra_kwargs = {'id': {'read_only': False, 'required': False}}
+
+
+class QuizQuestionWriteSerializer(serializers.ModelSerializer):
+    """
+    Used when creating/updating a question standalone.
+    Choices are managed separately via their own endpoint.
+    """
+    class Meta:
+        model  = QuizQuestion
+        fields = ['id', 'quiz', 'text', 'question_type', 'order', 'explanation']
+        extra_kwargs = {'quiz': {'required': False}}
+
+
+class QuizWriteSerializer(serializers.ModelSerializer):
+    """
+    Used when creating/updating a quiz.
+    Questions and choices are managed via their own nested endpoints.
+    """
+    class Meta:
+        model  = Quiz
+        fields = ['id', 'course', 'title', 'passing_score', 'instructions']
+        extra_kwargs = {'course': {'required': False}}
 
 
 class QuizChoicePublicSerializer(serializers.ModelSerializer):

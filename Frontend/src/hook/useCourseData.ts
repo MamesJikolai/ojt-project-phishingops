@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { apiService } from '../services/userService'
 import type { Course } from '../types/models'
 
@@ -6,6 +6,8 @@ export function useCourseData(courseId: string | undefined, role: string) {
     const [course, setCourse] = useState<Course | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [showQuiz, setShowQuiz] = useState(false)
+
+    const alertShownRef = useRef(false)
 
     const fetchCourse = useCallback(async () => {
         if (!courseId) return
@@ -24,6 +26,14 @@ export function useCourseData(courseId: string | undefined, role: string) {
                     console.warn(
                         'No LMS token found. Fetching generic course preview.'
                     )
+
+                    if (!alertShownRef.current) {
+                        alert(
+                            'Your progress will not be saved in this mode. Please use the email link to track your progress and access the quiz.'
+                        )
+                        alertShownRef.current = true
+                    }
+
                     const data = await apiService.getOne<Course>(
                         'courses',
                         courseId

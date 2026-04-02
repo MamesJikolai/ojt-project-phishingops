@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import DefaultButton from '../../DefaultButton'
 import Message from '../../Message'
@@ -21,6 +21,8 @@ function PublicCourseViewer({ role }: { role: string }) {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedQuiz, setSelectedQuiz] = useState<QuizPublic | null>(null)
 
+    const lessonAlertShownRef = useRef(false)
+
     const openQuizModal = useCallback((quizData: QuizPublic) => {
         setSelectedQuiz(quizData)
         setIsModalOpen(true)
@@ -37,6 +39,14 @@ function PublicCourseViewer({ role }: { role: string }) {
                 console.warn(
                     'No LMS token found in storage. Cannot save progress.'
                 )
+
+                if (!lessonAlertShownRef.current) {
+                    alert(
+                        'Your progress will not be saved in this mode. Please use the email link to track your progress and access the quiz.'
+                    )
+                    lessonAlertShownRef.current = true
+                }
+
                 return
             }
 
@@ -70,6 +80,7 @@ function PublicCourseViewer({ role }: { role: string }) {
 
                 try {
                     const data = await apiService.getQuizAttempt(quizId, token)
+                    console.log('Fetched quiz attempt data:', data)
                     if (data.quiz_attempt) {
                         setQuizScore(data.quiz_attempt.score)
                     }
@@ -139,7 +150,7 @@ function PublicCourseViewer({ role }: { role: string }) {
 
                     <div className="flex items-center gap-2">
                         <span
-                            className={`px-4 py-2 text-[20px] font-semibold rounded-full ${quizScore > 70 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                            className={`px-4 py-2 text-[20px] font-semibold rounded-full ${quizScore > (course?.quiz?.passing_score ?? 70) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
                         >
                             {quizScore}%
                         </span>

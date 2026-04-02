@@ -25,16 +25,6 @@ export default function getCellClasses(cell: any) {
             return `${baseBadge} bg-green-100 text-green-800`
         if (cellValue === 'failed')
             return `${baseBadge} bg-red-100 text-red-800`
-    } else if (columnId === 'score') {
-        if (Number(cellValue) < 60)
-            return `${baseBadge} bg-red-100 text-red-800`
-        if (Number(cellValue) >= 60 && Number(cellValue) < 70)
-            return `${baseBadge} bg-orange-100 text-orange-800`
-        if (Number(cellValue) >= 70 && Number(cellValue) < 80)
-            return `${baseBadge} bg-yellow-100 text-yellow-800`
-        if (Number(cellValue) >= 80)
-            return `${baseBadge} bg-green-100 text-green-800
-        `
     }
 
     return ''

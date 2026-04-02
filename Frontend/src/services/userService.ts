@@ -243,4 +243,23 @@ export const apiService = {
         )
         return response.data
     },
+
+    getQuizAttempt: async (quizId: number | string, token: string) => {
+        const response = await apiClient.get(
+            `lms/quiz/${quizId}/submit/?token=${token}`
+        )
+        return response.data
+    },
+
+    submitQuizAttempt: async (
+        quizId: number,
+        token: string,
+        answers: Record<string, number[]>
+    ) => {
+        const response = await apiClient.post(`lms/quiz/${quizId}/submit/`, {
+            token: token,
+            answers: answers,
+        })
+        return response.data
+    },
 }

@@ -1,10 +1,12 @@
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import DefaultButton from '../../DefaultButton'
 import Message from '../../Message'
 import PublicLessonCard from './PublicLessonCard'
 import { useCourseData } from '../../../hook/useCourseData'
-import { useCallback, useState } from 'react'
 import { apiService } from '../../../services/userService'
+import type { QuizPublic } from '../../../types/models'
+import PublicQuizModal from './PublicQuizModal'
 
 function PublicCourseViewer({ role }: { role: string }) {
     const { courseId } = useParams<{ courseId: string }>()
@@ -12,6 +14,17 @@ function PublicCourseViewer({ role }: { role: string }) {
 
     const { course, showQuiz, setShowQuiz } = useCourseData(courseId, role)
     const [openLessonIndex, setOpenLessonIndex] = useState<number | null>(null)
+
+    const [quizScore, setQuizScore] = useState<number>(0)
+    const [attemptsCount, setAttemptsCount] = useState<number>(0)
+
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [selectedQuiz, setSelectedQuiz] = useState<QuizPublic | null>(null)
+
+    const openQuizModal = useCallback((quizData: QuizPublic) => {
+        setSelectedQuiz(quizData)
+        setIsModalOpen(true)
+    }, [])
 
     const handleLessonCompleted = useCallback(
         async (lessonId: number) => {
@@ -46,6 +59,29 @@ function PublicCourseViewer({ role }: { role: string }) {
         },
         [courseId, role]
     )
+
+    useEffect(() => {
+        const fetchQuizData = async () => {
+            const quizId = course?.quiz?.id
+
+            if (showQuiz && role === 'public' && quizId) {
+                const token = localStorage.getItem('lms_token')
+                if (!token) return
+
+                try {
+                    const data = await apiService.getQuizAttempt(quizId, token)
+                    if (data.quiz_attempt) {
+                        setQuizScore(data.quiz_attempt.score)
+                    }
+                    setAttemptsCount(data.attempts_count || 0)
+                } catch (err) {
+                    console.error('Failed to fetch quiz attempts:', err)
+                }
+            }
+        }
+
+        fetchQuizData()
+    }, [showQuiz, course, role])
 
     return (
         <div className="flex flex-col items-start gap-4 m-8">
@@ -89,9 +125,38 @@ function PublicCourseViewer({ role }: { role: string }) {
             </div>
 
             {showQuiz && (
-                <DefaultButton
-                    children="Start Quiz"
-                    className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA] mt-4"
+                <div className="flex flex-row gap-4 items-center mt-4">
+                    <DefaultButton
+                        children="Start Quiz"
+                        onClick={() => {
+                            if (course?.quiz) {
+                                openQuizModal(course.quiz as any)
+                            }
+                        }}
+                        disabled={attemptsCount >= 3}
+                        className="bg-[#024C89] hover:bg-[#3572A1] text-[#F8F9FA]"
+                    />
+
+                    <div className="flex items-center gap-2">
+                        <span
+                            className={`px-4 py-2 text-[20px] font-semibold rounded-full ${quizScore > 70 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                        >
+                            {quizScore}%
+                        </span>
+                        <span className="px-4 py-2 bg-[#F8F9FA] rounded-full">
+                            {attemptsCount} / 3 tries
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            {isModalOpen && (
+                <PublicQuizModal
+                    key={selectedQuiz ? selectedQuiz.id : 'new-quiz'}
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    initialData={selectedQuiz}
+                    courseId={courseId}
                 />
             )}
         </div>

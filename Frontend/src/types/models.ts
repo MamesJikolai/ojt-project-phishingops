@@ -102,7 +102,7 @@ export interface QuizPublic {
 export interface QuizQuestionsPublic {
     id: number
     text: string
-    question_type: 'single choice' | 'multiple choice'
+    question_type: 'single' | 'multi'
     order: number
     choices: QuizChoices[]
 }

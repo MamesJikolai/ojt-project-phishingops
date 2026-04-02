@@ -1,6 +1,7 @@
 import TextField from '../TextField'
 import DefaultButton from '../DefaultButton'
 import type { QuizChoices, QuizQuestions } from '../../types/models'
+import TextInput from '../TextInput'
 
 interface QuestionCardsProps {
     qIndex: number
@@ -106,7 +107,7 @@ function QuestionCards({
 
                 {question.choices.map((choice, cIndex) => (
                     <div key={cIndex} className="flex items-center gap-3">
-                        <input
+                        <TextInput
                             type={
                                 question.question_type === 'single'
                                     ? 'radio'
@@ -124,7 +125,8 @@ function QuestionCards({
                             }
                             className="w-5 h-5 cursor-pointer accent-[#024C89]"
                         />
-                        <input
+
+                        <TextInput
                             type="text"
                             value={choice.text}
                             onChange={(e) =>
@@ -136,8 +138,9 @@ function QuestionCards({
                                 )
                             }
                             placeholder={`Choice ${cIndex + 1}`}
-                            className="flex-1 border border-gray-300 rounded p-2 text-sm focus:outline-[#024C89]"
+                            className="flex-1 border border-gray-300 rounded! p-2! text-sm! focus:outline-[#024C89] w-full!"
                         />
+
                         <DefaultButton
                             children="&times;"
                             onClick={() => removeChoice(qIndex, cIndex)}

@@ -53,14 +53,13 @@ function QuizModal({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
             <div className="flex flex-col gap-2 bg-[#F8F9FA] relative w-full max-w-2xl max-h-[90vh] px-[32px] py-[48px] overflow-y-auto rounded-xl drop-shadow-md">
-                <button
+                <DefaultButton
+                    children="&times;"
                     type="button"
                     onClick={onClose}
                     className="absolute top-1 right-4 text-[#4A4A4A] hover:text-[#DC3545] text-3xl font-bold z-10 transition-colors"
                     aria-label="Close modal"
-                >
-                    &times;
-                </button>
+                />
 
                 <h2>{mode === 'create' ? 'Create Quiz' : 'Edit Quiz'}</h2>
 

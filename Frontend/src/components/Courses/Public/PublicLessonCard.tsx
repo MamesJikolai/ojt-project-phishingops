@@ -1,8 +1,8 @@
-import { Icons } from '../../assets/icons'
-import type { Lesson } from '../../types/models'
-import { getEmbedUrl } from '../../utils/getEmbedUrl'
+import { Icons } from '../../../assets/icons'
+import type { Lesson } from '../../../types/models'
+import { getEmbedUrl } from '../../../utils/getEmbedUrl'
 import { useState, useEffect, useRef } from 'react'
-import LessonVideoPlayer from './LessonVideoPlayer'
+import LessonVideoPlayer from '../LessonVideoPlayer'
 import DOMPurify from 'dompurify'
 
 interface PublicLessonCardProps {

@@ -11,22 +11,22 @@ function TextInput({
     checkboxClass = '',
     ...props
 }: TextInputProps) {
-    const isCheckbox = props.type === 'checkbox'
+    const isChoose = props.type === 'checkbox' || props.type === 'radio'
 
     return (
         <label
-            className={`flex ${props.type === 'file' && props.accept !== '.csv' ? 'flex-row items-center gap-2 pt-4' : 'flex-col'} ${props.type === 'checkbox' ? 'w-fit' : 'w-full'}`}
+            className={`flex ${props.type === 'file' && props.accept !== '.csv' ? 'flex-row items-center gap-2 pt-4' : 'flex-col'} ${isChoose ? 'w-fit' : 'w-full'}`}
         >
-            {!isCheckbox && (
+            {!isChoose && label && (
                 <span className="text-[#121212] font-medium">{label}</span>
             )}
 
-            <div>
+            <div className="flex flex-row items-center gap-2">
                 <input
                     className={`text-[#4A4A4A] bg-#F8F9FA border-2 border-[#DDE2E5] focus:outline-[#024C89] rounded-4xl px-4 max-w-2xl py-1 ${className}`}
                     {...props}
                 />
-                {isCheckbox && (
+                {isChoose && label && (
                     <span
                         className={`text-[#121212] cursor-pointer ${checkboxClass}`}
                     >

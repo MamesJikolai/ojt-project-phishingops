@@ -76,21 +76,39 @@ function QuizModal({
                         className="w-full"
                     />
 
-                    <TextInput
-                        label="Passing Score (%)"
-                        type="number"
-                        placeholder="e.g., 80"
-                        value={quizState.passing_score}
-                        onChange={(e) =>
-                            handleQuizChange(
-                                'passing_score',
-                                Number(e.target.value)
-                            )
-                        }
-                        className="w-full"
-                        min={0}
-                        max={100}
-                    />
+                    <div className="flex gap-4">
+                        <TextInput
+                            label="Passing Score (%)"
+                            type="number"
+                            placeholder="e.g., 80"
+                            value={quizState.passing_score}
+                            onChange={(e) =>
+                                handleQuizChange(
+                                    'passing_score',
+                                    Number(e.target.value)
+                                )
+                            }
+                            className="w-full"
+                            min={0}
+                            max={100}
+                        />
+
+                        <TextInput
+                            label="Max Attempts"
+                            type="number"
+                            placeholder="e.g., 3"
+                            value={quizState.max_attempts}
+                            onChange={(e) =>
+                                handleQuizChange(
+                                    'max_attempts',
+                                    Number(e.target.value)
+                                )
+                            }
+                            className="w-full"
+                            min={0}
+                            max={5}
+                        />
+                    </div>
 
                     <TextField
                         label="Quiz Instructions"

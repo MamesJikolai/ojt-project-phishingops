@@ -17,6 +17,7 @@ function PublicCourseViewer({ role }: { role: string }) {
 
     const [quizScore, setQuizScore] = useState<number>(0)
     const [attemptsCount, setAttemptsCount] = useState<number>(0)
+    const [maxAttempts, setMaxAttempts] = useState<number>(0)
 
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedQuiz, setSelectedQuiz] = useState<QuizPublic | null>(null)
@@ -84,7 +85,8 @@ function PublicCourseViewer({ role }: { role: string }) {
                     if (data.quiz_attempt) {
                         setQuizScore(data.quiz_attempt.score)
                     }
-                    setAttemptsCount(data.attempts_count || 0)
+                    setAttemptsCount(data.attempts_used || 0)
+                    setMaxAttempts(data.max_attempts || 0)
                 } catch (err) {
                     console.error('Failed to fetch quiz attempts:', err)
                 }
@@ -155,7 +157,7 @@ function PublicCourseViewer({ role }: { role: string }) {
                             {quizScore}%
                         </span>
                         <span className="px-4 py-2 bg-[#F8F9FA] rounded-full">
-                            {attemptsCount} / 3 tries
+                            {attemptsCount} / {maxAttempts} tries
                         </span>
                     </div>
                 </div>

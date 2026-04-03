@@ -75,6 +75,7 @@ export function useQuizSave(courseId?: string) {
             const quizPayload = {
                 title: quizState.title,
                 passing_score: quizState.passing_score,
+                max_attempts: quizState.max_attempts,
                 instructions: quizState.instructions,
             }
 

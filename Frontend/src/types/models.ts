@@ -69,6 +69,7 @@ export interface Quiz {
     id: number
     title: string
     passing_score: number
+    max_attempts: number
     instructions: string
     total_questions: number
     questions: QuizQuestions[]
@@ -94,6 +95,7 @@ export interface QuizPublic {
     id: number
     title: string
     passing_score: number
+    max_attempts: number
     instructions: string
     total_questions: number
     questions: QuizQuestions[]

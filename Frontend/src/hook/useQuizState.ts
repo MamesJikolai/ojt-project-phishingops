@@ -25,6 +25,7 @@ export function useQuizState(
         id: 0,
         title: '',
         passing_score: 80,
+        max_attempts: 3,
         instructions: '',
         total_questions: 0,
         questions: [],

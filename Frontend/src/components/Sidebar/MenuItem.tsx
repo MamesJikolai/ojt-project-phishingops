@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom'
 
-// 1. Define what a Nav Link looks like
 interface NavLinkItem {
     title: string
     link: string
@@ -8,12 +7,12 @@ interface NavLinkItem {
     hrefActive?: string // The "?" means this is optional
 }
 
-// 2. Define the Props for this component
 interface MenuItemProps {
     items: NavLinkItem[]
+    onCloseMobile?: () => void
 }
 
-function MenuItem({ items }: MenuItemProps) {
+function MenuItem({ items, onCloseMobile }: MenuItemProps) {
     return (
         <div className="flex flex-col">
             {items.map(({ title, link, href, hrefActive }, index) => (

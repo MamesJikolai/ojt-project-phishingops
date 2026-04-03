@@ -72,7 +72,11 @@ const navLinksBottom = [
     },
 ]
 
-function AdminSidebar() {
+interface AdminSidebarProps {
+    onCloseMobile?: () => void
+}
+
+function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     const { user, logout } = useAuth()
     const userRole = user?.role || ''
     const navigate = useNavigate()
@@ -88,24 +92,30 @@ function AdminSidebar() {
 
     const handleLogout = () => {
         logout()
-        // Seamlessly redirect without reloading the whole browser tab
+        if (onCloseMobile) onCloseMobile() // Close sidebar on logout
         navigate('/home')
     }
 
     return (
-        <div className="flex flex-col justify-between w-[240px] text-[#4A4A4A] h-full">
+        <div className="flex flex-col justify-between w-[240px] text-[#4A4A4A] h-full shadow-lg md:shadow-none">
             <div>
                 {/* logo */}
-                <Link to="/dashboard">
-                    <div className="bg-[#024C89] w-fill h-[120px] m-2"></div>
+                <Link to="/dashboard" onClick={onCloseMobile}>
+                    <div className="bg-[#024C89] w-fill h-[120px] m-2 items-center justify-center text-[#F8F9FA]"></div>
                 </Link>
 
                 {/* nav links */}
-                <MenuItem items={filteredNavLinksTop} />
+                <MenuItem
+                    items={filteredNavLinksTop}
+                    onCloseMobile={onCloseMobile}
+                />
             </div>
 
             <div>
-                <MenuItem items={filteredNavLinksBottom} />
+                <MenuItem
+                    items={filteredNavLinksBottom}
+                    onCloseMobile={onCloseMobile}
+                />
 
                 <button
                     onClick={handleLogout}

@@ -76,7 +76,7 @@ function LandingPage() {
             <div className="flex justify-center gap-8 flex-wrap max-w-[100%]">
                 <form
                     onSubmit={handleSubmit}
-                    className="flex flex-col gap-2 bg-[#F8F9FA] w-150 h-fit max-h-[90vh] px-[48px] py-[32px] rounded-xl drop-shadow-md"
+                    className="flex flex-col gap-2 bg-[#F8F9FA] w-150 h-fit px-[48px] py-[32px] rounded-xl drop-shadow-md"
                 >
                     {error && (
                         <p className="text-[#DC3545] text-sm m-0">{error}</p>
@@ -126,8 +126,8 @@ function LandingPage() {
 
                 <div>
                     <h3>Preview</h3>
-                    <div className="bg-[#F8F9FA] w-[600px] h-[360px] rounded-xl drop-shadow-md overflow-hidden relative">
-                        <div className="absolute top-0 left-0 w-[857px] h-[514px] px-8 origin-top-left scale-[0.7]">
+                    <div className="bg-[#F8F9FA] w-[360px] h-[600px] md:w-[600px] md:h-[360px] rounded-xl drop-shadow-md overflow-hidden relative">
+                        <div className="absolute top-0 left-0 w-[514px] h-[857px] md:w-[857px] md:h-[514px] px-8 origin-top-left scale-[0.7]">
                             <PhishingPage
                                 previewTemplate={{
                                     title,

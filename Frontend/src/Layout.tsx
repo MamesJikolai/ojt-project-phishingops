@@ -47,7 +47,7 @@ function Layout() {
                 bg-[#F8F9FA] h-screen fixed top-0 left-0 z-50 w-[240px] 
                 transition-transform duration-300 ease-in-out
                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} 
-                md:translate-x-0
+                md:translate-x-0 overflow-y-auto
             `}
             >
                 <AdminSidebar

@@ -97,7 +97,7 @@ function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     }
 
     return (
-        <div className="flex flex-col justify-between w-[240px] text-[#4A4A4A] h-full shadow-lg md:shadow-none">
+        <div className="flex flex-col justify-between w-[240px] text-[#4A4A4A] min-h-full shadow-lg md:shadow-none">
             <div>
                 {/* logo */}
                 <Link to="/dashboard" onClick={onCloseMobile}>

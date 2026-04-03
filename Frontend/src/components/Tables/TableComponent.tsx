@@ -59,130 +59,134 @@ export default function TableComponent<TData>({
     })
 
     return (
-        <div className="text-[14px] w-full overflow-x-auto">
+        <div className="text-[14px] w-full">
             <h2>{title}</h2>
-            <table className="w-full">
-                <thead>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                    <th
-                                        key={header.id}
-                                        colSpan={header.colSpan}
-                                    >
-                                        {header.isPlaceholder ? null : (
-                                            <>
-                                                <div
-                                                    {...{
-                                                        className:
-                                                            header.column.getCanSort()
-                                                                ? 'cursor-pointer select-none'
-                                                                : '',
-                                                        onClick:
-                                                            header.column.getToggleSortingHandler(),
-                                                    }}
-                                                >
-                                                    {flexRender(
-                                                        header.column.columnDef
-                                                            .header,
-                                                        header.getContext()
-                                                    )}
-                                                    {{
-                                                        asc: ' ↑',
-                                                        desc: ' ↓',
-                                                    }[
-                                                        header.column.getIsSorted() as string
-                                                    ] ?? null}
-                                                </div>
-                                                {header.column.getCanFilter() ? (
-                                                    <div>
-                                                        <Filter
-                                                            column={
-                                                                header.column
-                                                            }
-                                                        />
-                                                    </div>
-                                                ) : null}
-                                            </>
-                                        )}
-                                    </th>
-                                )
-                            })}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody>
-                    {table.getRowModel().rows.map((row) => {
-                        return (
-                            <tr key={row.id}>
-                                {row.getVisibleCells().map((cell) => {
+
+            <div className="w-full overflow-x-auto">
+                <table className="w-full min-w-max table-auto">
+                    <thead>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
                                     return (
-                                        <td
-                                            key={cell.id}
-                                            className={`${customTablePadding}`}
+                                        <th
+                                            key={header.id}
+                                            colSpan={header.colSpan}
                                         >
-                                            <div
-                                                className={getCellClasses(cell)}
-                                            >
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </div>
-                                        </td>
+                                            {header.isPlaceholder ? null : (
+                                                <>
+                                                    <div
+                                                        {...{
+                                                            className:
+                                                                header.column.getCanSort()
+                                                                    ? 'cursor-pointer select-none'
+                                                                    : '',
+                                                            onClick:
+                                                                header.column.getToggleSortingHandler(),
+                                                        }}
+                                                    >
+                                                        {flexRender(
+                                                            header.column
+                                                                .columnDef
+                                                                .header,
+                                                            header.getContext()
+                                                        )}
+                                                        {{
+                                                            asc: ' ↑',
+                                                            desc: ' ↓',
+                                                        }[
+                                                            header.column.getIsSorted() as string
+                                                        ] ?? null}
+                                                    </div>
+                                                    {header.column.getCanFilter() ? (
+                                                        <div>
+                                                            <Filter
+                                                                column={
+                                                                    header.column
+                                                                }
+                                                            />
+                                                        </div>
+                                                    ) : null}
+                                                </>
+                                            )}
+                                        </th>
                                     )
                                 })}
                             </tr>
-                        )
-                    })}
-                </tbody>
-            </table>
+                        ))}
+                    </thead>
+                    <tbody>
+                        {table.getRowModel().rows.map((row) => {
+                            return (
+                                <tr key={row.id}>
+                                    {row.getVisibleCells().map((cell) => {
+                                        return (
+                                            <td
+                                                key={cell.id}
+                                                className={`${customTablePadding}`}
+                                            >
+                                                <div
+                                                    className={getCellClasses(
+                                                        cell
+                                                    )}
+                                                >
+                                                    {flexRender(
+                                                        cell.column.columnDef
+                                                            .cell,
+                                                        cell.getContext()
+                                                    )}
+                                                </div>
+                                            </td>
+                                        )
+                                    })}
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
 
             {/* Pagination Controls */}
             {isPaginated && (
-                <>
-                    <div className="h-2" />
-                    <div className="flex justify-center items-center gap-2 mt-4">
-                        <DefaultButton
-                            isPage={true}
-                            children="<<"
-                            onClick={() => table.setPageIndex(0)}
-                            disabled={!table.getCanPreviousPage()}
-                            className="hover:bg-[#024C89] hover:text-[#FFFAFA]"
-                        />
-                        <DefaultButton
-                            isPage={true}
-                            children="<"
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
-                            className="hover:bg-[#024C89] hover:text-[#FFFAFA]"
-                        />
-                        <DefaultButton
-                            isPage={true}
-                            children=">"
-                            onClick={() => table.nextPage()}
-                            disabled={!table.getCanNextPage()}
-                            className="hover:bg-[#024C89] hover:text-[#FFFAFA]"
-                        />
-                        <DefaultButton
-                            isPage={true}
-                            children=">>"
-                            onClick={() =>
-                                table.setPageIndex(table.getPageCount() - 1)
-                            }
-                            disabled={!table.getCanNextPage()}
-                            className="hover:bg-[#024C89] hover:text-[#FFFAFA]"
-                        />
-                        <span className="flex items-center gap-1">
-                            <div>Page</div>
-                            <strong>
-                                {table.getState().pagination.pageIndex + 1} of{' '}
-                                {table.getPageCount()}
-                            </strong>
-                        </span>
-                    </div>
-                </>
+                <div className="flex justify-center items-center gap-2 mt-6">
+                    <DefaultButton
+                        isPage={true}
+                        children="<<"
+                        onClick={() => table.setPageIndex(0)}
+                        disabled={!table.getCanPreviousPage()}
+                        className="hover:bg-[#024C89] hover:text-[#FFFAFA]"
+                    />
+                    <DefaultButton
+                        isPage={true}
+                        children="<"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="hover:bg-[#024C89] hover:text-[#FFFAFA]"
+                    />
+                    <DefaultButton
+                        isPage={true}
+                        children=">"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="hover:bg-[#024C89] hover:text-[#FFFAFA]"
+                    />
+                    <DefaultButton
+                        isPage={true}
+                        children=">>"
+                        onClick={() =>
+                            table.setPageIndex(table.getPageCount() - 1)
+                        }
+                        disabled={!table.getCanNextPage()}
+                        className="hover:bg-[#024C89] hover:text-[#FFFAFA]"
+                    />
+                    <span className="flex items-center gap-1">
+                        <div>Page</div>
+                        <strong>
+                            {table.getState().pagination.pageIndex + 1} of{' '}
+                            {table.getPageCount()}
+                        </strong>
+                    </span>
+                </div>
             )}
         </div>
     )

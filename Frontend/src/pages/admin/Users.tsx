@@ -87,11 +87,6 @@ function Users() {
                 meta: { filterVariant: 'select' },
             },
             {
-                accessorKey: 'position',
-                header: 'Position',
-                meta: { filterVariant: 'select' },
-            },
-            {
                 accessorKey: 'campaign_name',
                 header: 'Campaign',
                 meta: { filterVariant: 'select' },

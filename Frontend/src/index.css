@@ -41,3 +41,17 @@ th {
 td {
     padding: 16px 8px 16px 8px;
 }
+
+input[type='file']::file-selector-button {
+    margin-right: 8px;
+    border: none;
+    background: #024c89;
+    padding: 8px 16px;
+    border-radius: 10px;
+    color: #f8f9fa;
+    cursor: pointer;
+}
+
+input[type='file']::file-selector-button:hover {
+    background: #3572a1;
+}

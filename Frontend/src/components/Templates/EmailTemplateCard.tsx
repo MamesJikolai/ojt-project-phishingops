@@ -15,11 +15,11 @@ function EmailTemplateCard({
     handleDeleteTemplate,
 }: EmailTemplateCardProps) {
     return (
-        <div className="flex flex-row flex-wrap gap-8 justify-center lg:justify-start  mx-auto">
+        <div className="flex flex-row flex-wrap gap-8 justify-center mx-auto">
             {emailTemplate.map((item, index) => (
                 <div
                     key={index}
-                    className="flex flex-col gap-2 bg-[#F8F9FA] w-full max-w-[480px] px-4 sm:px-8 py-4 rounded-2xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1 drop-shadow-md"
+                    className="flex flex-col gap-2 bg-[#F8F9FA] w-full max-w-100 px-4 sm:px-8 py-4 rounded-2xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1 drop-shadow-md"
                 >
                     <div className="flex flex-col gap-2 pb-2 border-b-2 border-[#DDE2E5] grow">
                         <h3>{item.name}</h3>

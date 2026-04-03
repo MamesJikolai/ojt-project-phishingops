@@ -23,7 +23,7 @@ function CourseDetailsInput({
 
             <div>
                 <input
-                    className={`text-[#121212] border-1 border-[#121212] focus:outline-[#024C89] rounded-md px-4 py-1 ${className}`}
+                    className={`${props.type !== 'file' && 'text-[#121212] border border-[#121212] focus:outline-[#024C89] rounded-md px-4 py-1'} ${className}`}
                     {...props}
                 />
                 {isCheckbox && (

@@ -320,7 +320,6 @@ function AdminCourseViewer({ role }: { role: string }) {
                         handleUpload(selectedFile)
                     }
                 }}
-                className={`w-full ${isUploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
             />
 
             <CourseDetailsInput

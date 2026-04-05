@@ -106,7 +106,7 @@ function Courses() {
                     Loading Courses...
                 </div>
             ) : (
-                <div className="flex flex-row flex-wrap justify-center gap-[32px] drop-shadow-md">
+                <div className="flex flex-row flex-wrap justify-center gap-8 drop-shadow-md">
                     {data.map((item) => (
                         <CourseCard
                             item={item}

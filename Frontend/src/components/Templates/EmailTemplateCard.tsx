@@ -15,7 +15,7 @@ function EmailTemplateCard({
     handleDeleteTemplate,
 }: EmailTemplateCardProps) {
     return (
-        <div className="flex flex-row flex-wrap justify-evenly gap-y-10 mx-auto w-full">
+        <div className="flex flex-row flex-wrap justify-evenly gap-y-4 lg:gap-y-8 mx-auto w-full">
             {emailTemplate.map((item, index) => (
                 <div
                     key={index}

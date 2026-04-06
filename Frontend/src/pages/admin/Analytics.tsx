@@ -51,7 +51,7 @@ function Analytics() {
             <Message text="Analytics & Reports" />
 
             {data && (
-                <div className="flex flex-col gap-8 w-full">
+                <div className="flex flex-col gap-4 lg:gap-8 w-full">
                     {/* Summary Metrics */}
                     <div className="flex flex-row flex-wrap gap-4 justify-center md:justify-start">
                         {summaryMetrics.map((metric, index) => (
@@ -63,7 +63,7 @@ function Analytics() {
                         ))}
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 w-full">
                         {/* Campaign Status Distribution */}
                         <CampaignStatusChart data={data} />
 

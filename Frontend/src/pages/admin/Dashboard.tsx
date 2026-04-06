@@ -139,7 +139,7 @@ function Dashboard() {
                     </div>
                 )}
 
-                <div className="flex gap-8">
+                <div className="flex flex-wrap gap-x-8 gap-y-4">
                     {isLoading ? (
                         <div className="py-8 text-gray-500 animate-pulse">
                             Loading Campaigns...

@@ -14,6 +14,7 @@ function PublicCourseViewer({ role }: { role: string }) {
     const { course, showQuiz, setShowQuiz } = useCourseData(courseId, role)
     const [openLessonIndex, setOpenLessonIndex] = useState<number | null>(null)
 
+    const [hasQuiz, setHasQuiz] = useState(false)
     const [quizScore, setQuizScore] = useState<number>(0)
     const [attemptsCount, setAttemptsCount] = useState<number>(0)
     const [maxAttempts, setMaxAttempts] = useState<number>(0)
@@ -81,6 +82,7 @@ function PublicCourseViewer({ role }: { role: string }) {
             const quizId = course?.quiz?.id
 
             if (showQuiz && role === 'public' && quizId) {
+                setHasQuiz(true)
                 const token = localStorage.getItem('lms_token')
                 if (!token) return
 
@@ -147,7 +149,7 @@ function PublicCourseViewer({ role }: { role: string }) {
                 ))}
             </div>
 
-            {showQuiz && (
+            {hasQuiz && showQuiz && (
                 <div className="flex flex-row gap-4 items-center">
                     <DefaultButton
                         children="Start Quiz"

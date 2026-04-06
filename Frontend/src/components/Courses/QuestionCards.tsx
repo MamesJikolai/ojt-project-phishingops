@@ -34,7 +34,7 @@ function QuestionCards({
     return (
         <div
             key={qIndex}
-            className="bg-[#E6EDF3] p-4 rounded-md border shadow-sm flex flex-col gap-4"
+            className="bg-[#E6EDF3] p-4 rounded-md shadow-sm flex flex-col gap-4"
         >
             {/* Question Header */}
             <div className="flex justify-between items-center">
@@ -60,7 +60,7 @@ function QuestionCards({
                         onChange={(e) =>
                             updateQuestion(qIndex, 'text', e.target.value)
                         }
-                        className="w-full border! border-[#4A4A4A]! rounded-sm! bg-[#E6EDF3]!"
+                        className="w-full border! border-gray-300! rounded-sm! bg-[#E6EDF3]!"
                         rows={2}
                     />
                 </div>
@@ -71,7 +71,7 @@ function QuestionCards({
                         Type
                     </label>
                     <select
-                        className="w-full border border-[#4A4A4A] rounded p-2 text-sm"
+                        className="w-full border border-gray-300 rounded p-2 text-sm"
                         value={question.question_type}
                         onChange={(e) =>
                             updateQuestion(
@@ -96,7 +96,7 @@ function QuestionCards({
                     updateQuestion(qIndex, 'explanation', e.target.value)
                 }
                 rows={3}
-                className="w-full border! border-[#4A4A4A]! rounded-sm! bg-[#E6EDF3]!"
+                className="w-full border! border-gray-300! rounded-sm! bg-[#E6EDF3]!"
             />
 
             {/* Question Choices and Answer(s) */}

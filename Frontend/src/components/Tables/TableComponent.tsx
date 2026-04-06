@@ -45,10 +45,13 @@ export default function TableComponent<TData>({
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([])
 
+    const [globalFilter, setGlobalFilter] = React.useState('')
+
     const table = useReactTable({
         data,
         columns,
-        state: { columnFilters },
+        state: { columnFilters, globalFilter },
+        onGlobalFilterChange: setGlobalFilter,
         initialState: {
             pagination: {
                 pageSize: pageSize,
@@ -68,6 +71,15 @@ export default function TableComponent<TData>({
     return (
         <div className="text-[14px] w-full">
             <h2>{title}</h2>
+
+            {isPaginated && (
+                <DebouncedInput
+                    value={globalFilter ?? ''}
+                    onChange={(value) => setGlobalFilter(String(value))}
+                    className="px-2 py-1 mb-2 border border-[#4A4A4A] rounded-4xl w-full max-w-[40%] outline-none focus:border-[#024C89]"
+                    placeholder="Search all columns..."
+                />
+            )}
 
             <div className="w-full overflow-x-auto">
                 <table className="w-full min-w-max table-auto">
@@ -105,15 +117,6 @@ export default function TableComponent<TData>({
                                                             header.column.getIsSorted() as string
                                                         ] ?? null}
                                                     </div>
-                                                    {header.column.getCanFilter() ? (
-                                                        <div>
-                                                            <Filter
-                                                                column={
-                                                                    header.column
-                                                                }
-                                                            />
-                                                        </div>
-                                                    ) : null}
                                                 </>
                                             )}
                                         </th>

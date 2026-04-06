@@ -146,7 +146,10 @@ function Dashboard() {
                         </div>
                     ) : (
                         <TableComponent
-                            data={dashboardData?.recent_campaigns || []}
+                            data={
+                                dashboardData?.recent_campaigns.slice(0, 5) ||
+                                []
+                            }
                             columns={recentCampaignsColumns}
                             isPaginated={false}
                             customTablePadding="py-2! px-1! h-10"
@@ -160,7 +163,9 @@ function Dashboard() {
                         </div>
                     ) : (
                         <TableComponent
-                            data={dashboardData?.recent_clicks || []}
+                            data={
+                                dashboardData?.recent_clicks.slice(0, 5) || []
+                            }
                             columns={recentClickColumns}
                             isPaginated={false}
                             customTablePadding="py-2! px-1! h-10"

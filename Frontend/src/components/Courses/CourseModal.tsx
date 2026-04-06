@@ -2,6 +2,7 @@ import DefaultButton from '../DefaultButton.tsx'
 import TextInput from '../TextInput.tsx'
 import type { Course } from '../../types/models.ts'
 import { useState } from 'react'
+import TextField from '../TextField.tsx'
 
 interface CourseModalProps {
     isOpen: boolean
@@ -77,13 +78,13 @@ function CourseModal({ isOpen, onClose, onSave }: CourseModalProps) {
                     className="w-full"
                 />
 
-                <TextInput
+                <TextField
                     label="Description"
-                    type="text"
                     placeholder="Course Description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full"
+                    rows={5}
                 />
 
                 <DefaultButton

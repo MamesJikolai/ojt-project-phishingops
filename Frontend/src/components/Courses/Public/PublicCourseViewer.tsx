@@ -162,7 +162,7 @@ function PublicCourseViewer({ role }: { role: string }) {
 
                     <div className="flex items-center gap-2">
                         <span
-                            className={`px-4 py-2 text-[20px] font-semibold rounded-full ${quizScore > (course?.quiz?.passing_score ?? 70) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                            className={`px-4 py-2 text-[20px] font-semibold rounded-full ${quizScore >= (course?.quiz?.passing_score ?? 70) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
                         >
                             {quizScore}%
                         </span>

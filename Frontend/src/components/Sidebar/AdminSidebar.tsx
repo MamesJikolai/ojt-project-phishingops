@@ -113,17 +113,11 @@ function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
                 </Link>
 
                 {/* nav links */}
-                <MenuItem
-                    items={filteredNavLinksTop}
-                    onCloseMobile={onCloseMobile}
-                />
+                <MenuItem items={filteredNavLinksTop} />
             </div>
 
             <div>
-                <MenuItem
-                    items={filteredNavLinksBottom}
-                    onCloseMobile={onCloseMobile}
-                />
+                <MenuItem items={filteredNavLinksBottom} />
 
                 <button
                     onClick={handleLogout}

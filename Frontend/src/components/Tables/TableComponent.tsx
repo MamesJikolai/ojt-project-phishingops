@@ -12,7 +12,6 @@ import {
 } from '@tanstack/react-table'
 import type {
     ColumnDef,
-    Column,
     ColumnFiltersState,
     RowData,
 } from '@tanstack/react-table'

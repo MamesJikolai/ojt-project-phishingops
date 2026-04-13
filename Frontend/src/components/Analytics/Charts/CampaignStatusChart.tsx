@@ -13,10 +13,9 @@ function CampaignStatusChart({ data }: CampaignStatusChartProps) {
 
     const STATUS_COLORS: Record<string, string> = {
         Completed: '#28A745',
-        Draft: '#4A4A4A',
+        Draft: '#3572A1',
         Paused: '#FFC107',
-        Active: '#00A3AD',
-        Scheduled: '#3572A1',
+        Running: '#00A3AD',
     }
 
     const statusData = Object.keys(statusCounts).map((status) => {

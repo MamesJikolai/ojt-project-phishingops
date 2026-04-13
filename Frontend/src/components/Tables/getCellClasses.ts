@@ -12,8 +12,6 @@ export default function getCellClasses(cell: any) {
     } else if (columnId === 'status') {
         if (cellValue === 'completed')
             return `${baseBadge} bg-green-100 text-green-800`
-        if (cellValue === 'cancelled')
-            return `${baseBadge} bg-red-100 text-red-800`
         if (cellValue === 'running')
             return `${baseBadge} bg-cyan-100 text-cyan-800`
         if (cellValue === 'draft')

@@ -4,7 +4,7 @@ import io
 import logging
 
 from django.contrib.auth import authenticate, get_user_model
-from django.db.models import Count, Avg, Q
+from django.db.models import Count, Avg, Q, Max
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.timezone import localtime

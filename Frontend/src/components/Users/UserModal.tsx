@@ -11,29 +11,47 @@ interface UserModalProps {
 }
 
 function UserModal({ isOpen, onClose, initialData, onSave }: UserModalProps) {
-    const [full_name, setFullName] = useState(initialData?.full_name || '')
-    const [email, setEmail] = useState(initialData?.email || '')
-    const [department, setDepartment] = useState(initialData?.department || '')
-    const [position, setPosition] = useState(initialData?.position || '')
+    const [targetData, setTargetData] = useState<Partial<User>>(
+        initialData || {
+            full_name: '',
+            email: '',
+            department: '',
+            position: '',
+            business_unit: 'Ortigas',
+            manager: '',
+            manager_email: '',
+        }
+    )
 
     const [error, setError] = useState('')
+
+    const handletargetDataChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+        const { name, value } = e.target
+        setTargetData((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
 
-        if (!full_name || !email || !department) {
-            setError('All fields are required!')
+        if (
+            !targetData.full_name ||
+            !targetData.email ||
+            !targetData.department
+        ) {
+            setError('Name, Email, and Department are required!')
             return
         }
 
         const userDataToSave: Partial<User> = {
+            ...targetData,
             ...(initialData && { id: initialData.id }),
             campaign: initialData?.campaign,
-            full_name,
-            email,
-            department,
-            position,
         }
 
         onSave(userDataToSave)

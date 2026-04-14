@@ -78,7 +78,7 @@ function AdminUsers() {
     ]
 
     return (
-        <div className="w-full lg:w-fit">
+        <div className="w-full">
             <div className="flex flex-row justify-between items-center mb-2">
                 <h2>Admin Users</h2>
                 <DefaultButton

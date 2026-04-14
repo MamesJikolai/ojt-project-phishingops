@@ -23,6 +23,19 @@ export default function getCellClasses(cell: any) {
             return `${baseBadge} bg-green-100 text-green-800`
         if (cellValue === 'failed')
             return `${baseBadge} bg-red-100 text-red-800`
+    } else if (columnId === 'business_unit') {
+        if (cellValue === 'ortigas')
+            return `${baseBadge} bg-blue-100 text-blue-800`
+        if (cellValue === 'clark')
+            return `${baseBadge} bg-cyan-100 text-cyan-800`
+        if (cellValue === 'pangasinan')
+            return `${baseBadge} bg-purple-100 text-purple-800`
+        if (cellValue === 'south luzon')
+            return `${baseBadge} bg-yellow-100 text-yellow-800`
+        if (cellValue === 'iloilo')
+            return `${baseBadge} bg-purple-100 text-purple-800`
+        if (cellValue === 'proser')
+            return `${baseBadge} bg-red-100 text-red-800`
     }
 
     return ''

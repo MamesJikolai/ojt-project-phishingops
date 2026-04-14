@@ -16,7 +16,7 @@ const initialConfig: SMTPTest = {
     from_email: '',
     to_email: '',
     smtp_use_ssl: false,
-    smtp_use_tls: false,
+    smtp_use_tls: true,
 }
 
 function SMTPConfigurationForm({ mode }: SMTPConfigurationFormProps) {
@@ -67,12 +67,12 @@ function SMTPConfigurationForm({ mode }: SMTPConfigurationFormProps) {
     }
 
     return (
-        <div className="w-full md:w-150">
+        <div className="w-full">
             {!mode && <h2 className="mb-2">Test SMTP Connection</h2>}
 
             <form
                 onSubmit={handleSmtpConfigSubmit}
-                className="flex flex-col gap-2 bg-[#F8F9FA] w-full md:w-150 h-fit max-h-[90vh] px-8 py-6 rounded-xl drop-shadow-md"
+                className="flex flex-col gap-2 bg-[#F8F9FA] w-full h-fit max-h-[90vh] px-8 py-6 rounded-xl drop-shadow-md"
             >
                 {smtpError && (
                     <p className="text-[#DC3545] text-sm m-0">{smtpError}</p>

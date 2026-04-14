@@ -84,8 +84,6 @@ function Account() {
         navigate('/login')
     }
 
-    // Since AuthContext acts as the gatekeeper, 'user' is guaranteed to exist here
-    // But we can add a fallback just in case.
     if (!user) return null
 
     return (

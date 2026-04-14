@@ -7,34 +7,51 @@ interface UserModalProps {
     isOpen: boolean
     onClose: () => void
     initialData?: User | null
-    // 1. FIXED: Use Partial<User> here so TypeScript stops yelling!
     onSave: (user: Partial<User>) => void
 }
 
 function UserModal({ isOpen, onClose, initialData, onSave }: UserModalProps) {
-    const [full_name, setFullName] = useState(initialData?.full_name || '')
-    const [email, setEmail] = useState(initialData?.email || '')
-    const [department, setDepartment] = useState(initialData?.department || '')
-    const [position, setPosition] = useState(initialData?.position || '')
+    const [targetData, setTargetData] = useState<Partial<User>>(
+        initialData || {
+            full_name: '',
+            email: '',
+            department: '',
+            position: '',
+            business_unit: 'Ortigas',
+            manager: '',
+            manager_email: '',
+        }
+    )
 
     const [error, setError] = useState('')
+
+    const handletargetDataChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+        const { name, value } = e.target
+        setTargetData((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
 
-        if (!full_name || !email || !department) {
-            setError('All fields are required!')
+        if (
+            !targetData.full_name ||
+            !targetData.email ||
+            !targetData.department
+        ) {
+            setError('Name, Email, and Department are required!')
             return
         }
 
         const userDataToSave: Partial<User> = {
+            ...targetData,
             ...(initialData && { id: initialData.id }),
             campaign: initialData?.campaign,
-            full_name,
-            email,
-            department,
-            position,
         }
 
         onSave(userDataToSave)
@@ -65,36 +82,83 @@ function UserModal({ isOpen, onClose, initialData, onSave }: UserModalProps) {
                 <TextInput
                     label="Name"
                     type="text"
+                    name="full_name"
                     placeholder="User Name"
-                    value={full_name}
-                    onChange={(e) => setFullName(e.target.value)}
+                    value={targetData.full_name}
+                    onChange={handletargetDataChange}
                     className="w-full"
                 />
 
                 <TextInput
                     label="Email"
                     type="email"
+                    name="email"
                     placeholder="Full Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={targetData.email || ''}
+                    onChange={handletargetDataChange}
                     className="w-full"
                 />
 
                 <TextInput
                     label="Department"
                     type="text"
+                    name="department"
                     placeholder="User Department"
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
+                    value={targetData.department || ''}
+                    onChange={handletargetDataChange}
                     className="w-full"
                 />
 
                 <TextInput
                     label="Position"
                     type="text"
+                    name="position"
                     placeholder="User Position"
-                    value={position}
-                    onChange={(e) => setPosition(e.target.value)}
+                    value={targetData.position || ''}
+                    onChange={handletargetDataChange}
+                    className="w-full"
+                />
+
+                <label>
+                    <span className="font-medium text-[#121212]">
+                        Business Unit
+                    </span>
+                    <br />
+                    <select
+                        name="business_unit"
+                        value={targetData.business_unit || 'Ortigas'}
+                        onChange={handletargetDataChange}
+                        className="text-[#4A4A4A] bg-[#F8F9FA] border-2 border-[#DDE2E5] focus:outline-[#024C89] active:outline-[#024C89] w-full max-w-2xl rounded-4xl px-2 py-1 disabled:bg-gray-200 disabled:opacity-70"
+                    >
+                        <option value="" disabled hidden>
+                            -- Select an option --
+                        </option>
+                        <option value="Ortigas">Ortigas</option>
+                        <option value="Clark">Clark</option>
+                        <option value="Pangasinan">Pangasinan</option>
+                        <option value="South Luzon">South Luzon</option>
+                        <option value="Iloilo">Iloilo</option>
+                        <option value="Proser">Proser</option>
+                    </select>
+                </label>
+
+                <TextInput
+                    label="Manager"
+                    type="text"
+                    name="manager"
+                    placeholder="Manager Full Name"
+                    value={targetData.manager || ''}
+                    onChange={handletargetDataChange}
+                    className="w-full"
+                />
+
+                <TextInput
+                    label="Manager Email"
+                    type="text"
+                    name="manager_email"
+                    placeholder="e.g. manager@email.com"
+                    value={targetData.manager_email || ''}
+                    onChange={handletargetDataChange}
                     className="w-full"
                 />
 

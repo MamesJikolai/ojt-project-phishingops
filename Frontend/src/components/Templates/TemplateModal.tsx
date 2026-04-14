@@ -21,41 +21,45 @@ function TemplateModal({
     onSave,
 }: TemplateModalProps) {
     const { user } = useAuth()
-    const [name, setName] = useState(initialData?.name || '')
-    const [author, setAuthor] = useState(user?.username)
-    const [sender_name, setSenderName] = useState(
-        initialData?.sender_name || ''
-    )
-    const [subject, setSubject] = useState(initialData?.subject || '')
-    const [body_html, setBody] = useState(initialData?.body_html || '')
-    const [company_name, setCompanyName] = useState(
-        initialData?.company_name || ''
-    )
+    const [emailTemplateData, setEmailTemplateData] = useState({
+        id: initialData?.id || 0,
+        name: initialData?.name || '',
+        author: user?.username,
+        sender_name: initialData?.sender_name || '',
+        company_name: initialData?.company_name || '',
+        subject: initialData?.subject || '',
+        body_html: initialData?.body_html || '',
+        email_signature: initialData?.email_signature || '',
+        created_at: initialData?.created_at || new Date().toLocaleString(),
+    })
     const [error, setError] = useState('')
 
     const isViewOnly = mode === 'view'
+
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name, value } = e.target
+
+        setEmailTemplateData((prev) => ({ ...prev, [name]: value }))
+    }
 
     const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError('')
 
-        if (!name || !author || !sender_name || !subject || !body_html) {
+        if (
+            !emailTemplateData.name ||
+            !emailTemplateData.author ||
+            !emailTemplateData.sender_name ||
+            !emailTemplateData.subject ||
+            !emailTemplateData.body_html
+        ) {
             setError('All fields are required!')
             return
         }
 
-        const templateDataToSave = {
-            id: initialData?.id || Date.now(), // Generate a fake ID if creating
-            name,
-            author,
-            sender_name,
-            subject,
-            body_html,
-            company_name,
-            created_at: initialData?.created_at || new Date().toLocaleString(),
-        }
-
-        onSave(templateDataToSave)
+        onSave(emailTemplateData)
         onClose()
     }
 
@@ -92,8 +96,8 @@ function TemplateModal({
                     label="Name"
                     type="text"
                     placeholder="Template Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={emailTemplateData.name}
+                    onChange={handleInputChange}
                     className="w-full"
                     disabled={isViewOnly}
                 />
@@ -102,8 +106,8 @@ function TemplateModal({
                     label="Author"
                     type="text"
                     placeholder="Template Author"
-                    value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
+                    value={emailTemplateData.author}
+                    onChange={handleInputChange}
                     className="w-full"
                     disabled
                 />
@@ -112,8 +116,8 @@ function TemplateModal({
                     label="Sender"
                     type="text"
                     placeholder="Sender Name"
-                    value={sender_name}
-                    onChange={(e) => setSenderName(e.target.value)}
+                    value={emailTemplateData.sender_name}
+                    onChange={handleInputChange}
                     className="w-full"
                     disabled={isViewOnly}
                 />
@@ -122,8 +126,8 @@ function TemplateModal({
                     label="Company Name"
                     type="text"
                     placeholder="Dummy Company Name"
-                    value={company_name}
-                    onChange={(e) => setCompanyName(e.target.value)}
+                    value={emailTemplateData.company_name}
+                    onChange={handleInputChange}
                     className="w-full"
                     disabled={isViewOnly}
                 />
@@ -132,22 +136,32 @@ function TemplateModal({
                     label="Subject"
                     type="text"
                     placeholder="Email Subject"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
+                    value={emailTemplateData.subject}
+                    onChange={handleInputChange}
                     className="w-full"
                     disabled={isViewOnly}
                 />
 
                 <TextField
                     label="Body"
-                    description={bodyDescription}
+                    description={!isViewOnly && bodyDescription}
                     placeholder="Email Body"
-                    value={body_html}
-                    onChange={(e) => setBody(e.target.value)}
+                    value={emailTemplateData.body_html}
+                    onChange={handleInputChange}
                     className="w-full"
                     disabled={isViewOnly}
-                    rows={10}
+                    rows={isViewOnly ? 12 : 10}
                 />
+
+                {isViewOnly ? (
+                    ''
+                ) : (
+                    <TextInput
+                        label="Email Signature"
+                        type="file"
+                        accept="image/png, image/jpeg, .png, .jpg, .jpeg,"
+                    />
+                )}
 
                 {/* Hide the submit button completely if we are just viewing */}
                 {!isViewOnly && (
@@ -175,7 +189,7 @@ const availableVariables = [
 ]
 
 const bodyDescription = (
-    <div className="flex flex-col gap-4 mt-2">
+    <div className="flex flex-col gap-4 mt-2 mb-4">
         <div>
             <span className="font-medium text-[#121212] block mb-2">
                 Available variables:

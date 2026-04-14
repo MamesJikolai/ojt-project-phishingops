@@ -86,12 +86,12 @@ function PlatformConfigurationForm() {
     }
 
     return (
-        <div className="w-full md:w-150">
+        <div className="w-full">
             <h2 className="mb-2">Platform Configuration</h2>
 
             <form
                 onSubmit={handlePlatformConfigSubmit}
-                className="flex flex-col gap-2 bg-[#F8F9FA] w-full md:w-150 h-fit max-h-[90vh] px-8 py-6 rounded-xl drop-shadow-md"
+                className="flex flex-col gap-2 bg-[#F8F9FA] w-full h-fit max-h-[90vh] px-8 py-6 rounded-xl drop-shadow-md"
             >
                 {platformError && (
                     <p className="text-[#DC3545] text-sm m-0">

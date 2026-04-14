@@ -24,7 +24,7 @@ function TextInput({
 
     return (
         <label
-            className={`flex ${props.type === 'file' && props.accept !== '.csv' && label === 'Thumbnail' ? 'flex-row items-center gap-2' : 'flex-col'} ${isChoose ? 'w-fit' : 'w-full'}`}
+            className={`flex ${props.type === 'file' && props.accept !== '.csv' && label === 'Thumbnail' ? 'flex-row items-center gap-2' : 'flex-col'} w-full`}
         >
             {!isChoose && label && (
                 <span className="text-[#121212] font-medium">{label}</span>

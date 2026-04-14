@@ -121,6 +121,7 @@ export interface EmailTemplate {
     subject: string
     sender_name: string
     body_html: string
+    email_signature: string
     created_by?: number
     created_by_username?: string
     company_name: string
@@ -136,6 +137,15 @@ export interface User {
     full_name: string
     department: string
     position: string
+    business_unit:
+        | 'Ortigas'
+        | 'Clark'
+        | 'Pangasinan'
+        | 'South Luzon'
+        | 'Iloilo'
+        | 'Proser'
+    manager: string
+    manager_email: string
     token: string
     phishing_link: string
     email_sent_at: string | null
@@ -189,6 +199,21 @@ export interface SMTPTest {
     to_email: string
 }
 
+export interface ManagerReminder {
+    reminder_enabled: boolean
+    reminder_days: number
+    manager_notify_enabled: boolean
+    reminder_from_name: string
+    reminder_from_email: string
+    reminder_smtp_host: string
+    reminder_smtp_port: number
+    reminder_smtp_user: string
+    reminder_smtp_password: string
+    reminder_smtp_use_tls: boolean
+    reminder_smtp_use_ssl: boolean
+    updated_at: string
+}
+
 export interface AnalyticsStats {
     total_campaigns: number
     total_sent: number
@@ -202,6 +227,7 @@ export interface AnalyticsResponse {
     summary: AnalyticsStats
     campaigns: any[]
     department_stats: any[]
+    business_unit_stats: any[]
 }
 
 export interface DashboardStats {

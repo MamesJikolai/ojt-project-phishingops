@@ -8,6 +8,7 @@ import SimulationStatsChart from '../../components/Analytics/Charts/SimulationSt
 import LatestCampaignsClickRateChart from '../../components/Analytics/Charts/LatestCampaignsClickRateChart.tsx'
 import TopDepartmentsEngagementChart from '../../components/Analytics/Charts/TopDepartmentsEngagementChart.tsx'
 import TopDepartmentsRiskChart from '../../components/Analytics/Charts/TopDepartmentsRiskChart.tsx'
+import BusinessUnitRiskChart from '../../components/Analytics/Charts/BusinessUnitRiskChart.tsx'
 
 function Analytics() {
     const [data, setData] = useState<AnalyticsResponse | null>(null)
@@ -72,6 +73,9 @@ function Analytics() {
 
                         {/* Campaign Click Rate Chart */}
                         <LatestCampaignsClickRateChart data={data} />
+
+                        {/* Business Unit Risk Chart */}
+                        <BusinessUnitRiskChart data={data} />
 
                         {/* Department Stats Chart */}
                         <TopDepartmentsEngagementChart data={data} />

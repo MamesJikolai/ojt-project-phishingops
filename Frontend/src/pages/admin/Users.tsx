@@ -81,10 +81,18 @@ function Users() {
         () => [
             { accessorKey: 'full_name', header: 'Name' },
             { accessorKey: 'email', header: 'Email' },
+            { accessorKey: 'business_unit', header: 'Business Unit' },
             {
                 accessorKey: 'department',
                 header: 'Department',
-                meta: { filterVariant: 'select' },
+            },
+            {
+                accessorKey: 'manager',
+                header: 'Manager',
+            },
+            {
+                accessorKey: 'manager_email',
+                header: 'Manager Email',
             },
             {
                 accessorKey: 'campaign_name',

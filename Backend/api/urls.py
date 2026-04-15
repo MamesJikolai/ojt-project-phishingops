@@ -76,6 +76,7 @@ urlpatterns = [
     path('settings/', views.PlatformSettingsView.as_view(), name='settings'),
     path('settings/reminder-smtp/', views.ReminderSMTPSettingsView.as_view(), name='reminder-smtp'),
     path('settings/smtp-test/', views.SMTPTestView.as_view(), name='smtp-test'),
+    path('settings/upload-logo/', views.PlatformLogoUploadView.as_view(), name='landing-page-logo'),
 
     # ── User Management (admin/HR accounts) ───────────────────────────────────
     path('users/', views.UserListView.as_view(),   name='user-list'),

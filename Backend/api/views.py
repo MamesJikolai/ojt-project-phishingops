@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django_filters.rest_framework import DjangoFilterBackend
 
 from apps.campaigns.models import (
@@ -176,14 +176,18 @@ class EmailTemplateViewSet(viewsets.ModelViewSet):
     """
     Full CRUD for email templates.
     GET    /api/v1/templates/        — list all
-    POST   /api/v1/templates/        — create
+    POST   /api/v1/templates/        — create (multipart for signature_image)
     GET    /api/v1/templates/<id>/   — retrieve
-    PATCH  /api/v1/templates/<id>/   — update
+    PATCH  /api/v1/templates/<id>/   — update (multipart for signature_image)
     DELETE /api/v1/templates/<id>/   — delete
+
+    When uploading a signature_image, send as multipart/form-data.
+    All other fields can still be sent as JSON when no file is included.
     """
     queryset           = EmailTemplate.objects.select_related('created_by').all()
     serializer_class   = EmailTemplateSerializer
     permission_classes = [IsAdminOrHRReadOnly]
+    parser_classes     = [MultiPartParser, FormParser, JSONParser]
     filter_backends    = [filters.SearchFilter, filters.OrderingFilter]
     search_fields      = ['name', 'subject', 'company_name', 'sender_name']
     ordering_fields    = ['name', 'created_at']
@@ -191,6 +195,39 @@ class EmailTemplateViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        # Allow partial PATCH even when sending multipart form data
+        kwargs['partial'] = True
+        return super().update(request, *args, **kwargs)
+    
+    @action(
+        detail=True,
+        methods=['post'],
+        url_path='upload-signature',
+        parser_classes=[MultiPartParser, FormParser],
+    )
+    def upload_signature(self, request, pk=None):
+        template = self.get_object()
+        image = request.FILES.get('signature_image')
+
+        if not image:
+            return Response({'error': 'No image file provided.'}, status=400)
+
+        # Re-use your validation logic here
+        valid_extensions = ['.jpg', '.jpeg', '.png', '.webp']
+        ext = os.path.splitext(image.name)[1].lower()
+        if ext not in valid_extensions:
+            return Response({'error': 'Invalid file type.'}, status=400)
+
+        template.signature_image = image
+        template.save(update_fields=['signature_image'])
+
+        serializer = self.get_serializer(template)
+        return Response({
+            'detail': 'Signature image uploaded successfully.',
+            'signature_image_url': serializer.data.get('signature_image_url')
+        })
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1383,6 +1420,64 @@ class PlatformSettingsView(APIView):
         return Response(
             PlatformSettingsSerializer(settings_obj, context={'request': request}).data
         )
+    
+class PlatformLogoUploadView(APIView):
+    """
+    Dedicated endpoint for uploading the platform logo.
+    Matches the logic used in CourseViewSet.upload_thumbnail().
+    """
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAdminRole] 
+
+    def post(self, request, *args, **kwargs):
+        settings_obj = PlatformSettings.get()
+        logo = request.FILES.get('logo') # Look for 'logo' key in FormData
+
+        if not logo:
+            return Response(
+                {'error': 'No logo file provided.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # 1. Validate extension (Matches your Thumbnail logic)
+        valid_extensions = ['.jpg', '.jpeg', '.png', '.webp', '.svg']
+        ext = os.path.splitext(logo.name)[1].lower()
+
+        if ext not in valid_extensions:
+            return Response(
+                {'error': 'Invalid file type. Only JPG, JPEG, PNG, WEBP, and SVG are allowed.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # 2. Validate MIME type
+        valid_mime_types = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml']
+        if logo.content_type not in valid_mime_types:
+            return Response(
+                {'error': 'Invalid file content type.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # 3. Save
+        try:
+            settings_obj.logo = logo
+            settings_obj.save(update_fields=['logo'])
+
+            # Build the URL for the response
+            serializer = PlatformSettingsSerializer(settings_obj, context={'request': request})
+            
+            return Response(
+                {
+                    'detail': 'Platform logo uploaded successfully.',
+                    'platform_name': settings_obj.platform_name,
+                    'logo': serializer.data.get('logo'), # Returns full absolute URL
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Failed to save logo: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class ReminderSMTPSettingsView(APIView):
     """

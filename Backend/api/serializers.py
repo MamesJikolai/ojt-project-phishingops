@@ -46,7 +46,7 @@ class EmailTemplateSerializer(serializers.ModelSerializer):
                             'created_by_username', 'signature_image_url']
         extra_kwargs = {
             'created_by': {'read_only': True},
-            'signature_image': {'required': False},
+            'signature_image': {'required': False, 'allow_null':True},
         }
 
     def get_signature_image_url(self, obj):
@@ -396,10 +396,10 @@ class PlatformSettingsSerializer(serializers.Serializer):
     landing_message2     = serializers.CharField()
     landing_button_text  = serializers.CharField(max_length=100)
     # Logo
-    logo_url             = serializers.SerializerMethodField()
-    updated_at             = serializers.DateTimeField(read_only=True)
+    logo                 = serializers.SerializerMethodField()
+    updated_at           = serializers.DateTimeField(read_only=True)
 
-    def get_logo_url(self, obj):
+    def get_logo(self, obj):
         request = self.context.get('request')
         if obj.logo and request:
             return request.build_absolute_uri(obj.logo.url)

@@ -222,7 +222,7 @@ class CampaignTargetInline(admin.TabularInline):
     extra   = 1
     fields  = (
         'email', 'full_name', 'department', 'position', 'business_unit',
-        'email_sent_at', 'email_failed', 'link_clicked_at',
+        'manager_email', 'email_sent_at', 'email_failed', 'link_clicked_at',
         'lms_completed_at', 'quiz_score',
     )
     readonly_fields = (

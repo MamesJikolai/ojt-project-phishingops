@@ -83,43 +83,118 @@ def _plain_to_html(text: str) -> str:
     return header + body_content + footer
 
 
-def _append_signature(html_body: str, template) -> str:
+# def _append_signature(html_body: str, template):
+#     """
+#     If the template has a signature_image, append it using CID inline
+#     attachment — the correct method for email signatures.
+
+#     data: URI images are blocked by Gmail, Outlook, and most email clients.
+#     CID attachments are universally supported.
+
+#     Returns (html_body, image_data, mime_type, cid) where:
+#       - html_body   : updated HTML with <img src="cid:...">
+#       - image_data  : raw bytes of the image (None if no signature)
+#       - mime_type   : e.g. 'image/png' (None if no signature)
+#       - cid         : the Content-ID string (None if no signature)
+#     """
+#     if not template.signature_image:
+#         return html_body, None, None, None
+
+#     try:
+#         import mimetypes
+
+#         sig_path = template.signature_image.path
+#         mime, _  = mimetypes.guess_type(sig_path)
+#         mime     = mime or 'image/png'
+#         cid      = 'signature_image_phishingops'
+
+#         with open(sig_path, 'rb') as f:
+#             image_data = f.read()
+
+#         sig_html = (
+#             '<div style="margin-top:24px;padding-top:16px;'
+#             'border-top:1px solid #e0e0e0;">'
+#             f'<img src="cid:{cid}" '
+#             'style="max-width:400px;height:auto;display:block;" '
+#             'alt="Signature" />'
+#             '</div>'
+#         )
+
+#         if '</body>' in html_body:
+#             html_body = html_body.replace('</body>', sig_html + '</body>', 1)
+#         else:
+#             html_body = html_body + sig_html
+
+#         return html_body, image_data, mime, cid
+
+#     except Exception as exc:
+#         logger.warning(f'Signature image could not be loaded: {exc}')
+#         return html_body, None, None, None
+    
+def _append_signature(html_body: str, template):
     """
-    If the template has a signature_image, embed it as a base64 inline
-    <img> tag appended to the bottom of the email body.
-    Works for both plain-text-converted HTML and hand-written HTML bodies.
+    Appends a text signature and the signature_image from the model.
     """
-    if not template.signature_image:
-        return html_body
+    # If there is no image AND no specific company name, you might still want 
+    # a basic text signature, or you can just return the body as-is.
+    if not template.signature_image and not template.company_name:
+        return html_body, None, None, None
 
     try:
-        import base64
         import mimetypes
+        
+        # 1. Prepare Image Data if it exists
+        image_data, mime, cid = None, None, None
+        img_html = ""
+        
+        if template.signature_image:
+            sig_path = template.signature_image.path
+            mime, _  = mimetypes.guess_type(sig_path)
+            mime     = mime or 'image/png'
+            cid      = 'signature_image_phishing' # Simple ID
+            
+            with open(sig_path, 'rb') as f:
+                image_data = f.read()
+            
+            img_html = f'<div style="margin-top:12px;"><img src="cid:{cid}" style="max-width:200px;height:auto;display:block;" alt="Logo" /></div>'
 
-        sig_path = template.signature_image.path
-        mime, _  = mimetypes.guess_type(sig_path)
-        mime     = mime or 'image/png'
-
-        with open(sig_path, 'rb') as f:
-            b64 = base64.b64encode(f.read()).decode('ascii')
-
+        # 2. Build the Text + Image Signature
+        # We use the sender_name and company_name directly from the model
+        # 2. Build the Text + Image Signature (Inline Layout)
+        company = template.company_name or ""
+        sender = template.sender_name or "Support Team"
+        
+        # We use a table with two cells (<td>) to put the image and text side-by-side
         sig_html = (
-            '<div style="margin-top:24px;padding-top:16px;'
-            'border-top:1px solid #e0e0e0;">'
-            f'<img src="data:{mime};base64,{b64}" '
-            'style="max-width:400px;height:auto;display:block;" '
-            'alt="Signature" />'
+            '<div style="margin-top:24px; padding-top:16px; border-top:1px solid #e0e0e0;">'
+                '<table border="0" cellpadding="0" cellspacing="0" style="font-family:Arial,sans-serif; color:#666666;">'
+                    '<tr>'
+                        # Left Cell: The Image
+                        f'<td style="vertical-align: middle; padding-right: 15px;">'
+                            f'<img src="cid:{cid}" style="max-width:200px; height:auto; display:block;" alt="Logo" />'
+                        '</td>'
+                        # Right Cell: The Text (with a vertical line separator)
+                        '<td style="vertical-align: middle; padding-left: 15px; border-left: 1px solid #cccccc; line-height: 1.4;">'
+                            f'<p style="margin:0; font-size:16px; font-weight:bold; color:#333333;">{sender}</p>'
+                            f'<p style="margin:0; font-size:13px; color:#666666;">{company}</p>'
+                            '<p style="margin:0; font-size:12px; font-style:italic; color:#888888;">Security Awareness Team</p>'
+                        '</td>'
+                    '</tr>'
+                '</table>'
             '</div>'
         )
 
-        # Insert before </body> if present, otherwise just append
+        # 3. Inject into HTML
         if '</body>' in html_body:
-            return html_body.replace('</body>', sig_html + '</body>', 1)
-        return html_body + sig_html
+            html_body = html_body.replace('</body>', sig_html + '</body>', 1)
+        else:
+            html_body = html_body + sig_html
+
+        return html_body, image_data, mime, cid
 
     except Exception as exc:
-        logger.warning(f'Signature image could not be embedded: {exc}')
-        return html_body
+        logger.warning(f'Signature could not be fully loaded: {exc}')
+        return html_body, None, None, None
 
 
 def render_body(body_html: str, target, campaign) -> str:
@@ -222,8 +297,8 @@ def _send_single_email(target_id: int):
             timeout=15,
         )
 
-        html_body   = render_body(template.body_html, target, campaign)
-        html_body   = _append_signature(html_body, template)
+        html_body = render_body(template.body_html, target, campaign)
+        html_body, sig_data, sig_mime, sig_cid = _append_signature(html_body, template)
         from_header = f'{template.sender_name} <{campaign.from_email}>'
 
         msg = EmailMultiAlternatives(
@@ -234,6 +309,19 @@ def _send_single_email(target_id: int):
             connection=backend,
         )
         msg.attach_alternative(html_body, 'text/html')
+
+        # Attach signature image as CID inline
+        if sig_data and sig_mime and sig_cid:
+            from email.mime.image import MIMEImage
+            logger.info(f"DEBUG: Attaching signature. Size: {len(sig_data)} bytes. CID: {sig_cid}")
+            img_part = MIMEImage(sig_data)
+            img_part.add_header('Content-ID', f'<{sig_cid}>')            
+            img_part.add_header(
+                'Content-Disposition', 'inline',
+                filename='signature'
+            )
+            msg.attach(img_part)
+
         msg.send()
 
         target.email_sent_at = timezone.now()

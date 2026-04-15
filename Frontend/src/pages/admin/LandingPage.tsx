@@ -17,10 +17,9 @@ function LandingPage() {
         updated_at: '',
     })
     const [logoFile, setLogoFile] = useState<File | null>(null)
+    const [fileInputKey, setFileInputKey] = useState(Date.now())
     const [error, setError] = useState('')
     const [isLoading, setIsLoading] = useState(true)
-
-    const fileInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -57,21 +56,30 @@ function LandingPage() {
             setLogoFile(e.target.files[0])
 
             const localUrl = URL.createObjectURL(e.target.files[0])
-            setLandingPageData((prev) => ({ ...prev, logo_url: localUrl }))
+            setLandingPageData((prev) => ({ ...prev, logo: localUrl }))
         }
     }
 
     const handleRemoveLogo = async () => {
-        try {
-            const formData = new FormData()
-            formData.append('remove_logo', 'true')
+        if (logoFile) {
+            setLogoFile(null)
+            setLandingPageData((prev) => ({ ...prev, logo: '', logo_url: '' }))
+            setFileInputKey(Date.now())
 
-            await apiService.updateSingleton('settings', formData)
+            return
+        }
+
+        try {
+            await apiService.deleteFile('settings/upload-logo')
 
             // Clear local state
             setLogoFile(null)
-            setLandingPageData((prev) => ({ ...prev, logo_url: '' }))
-            if (fileInputRef.current) fileInputRef.current.value = ''
+            setLandingPageData((prev) => ({
+                ...prev,
+                logo: '',
+                logo_url: '',
+            }))
+            setFileInputKey(Date.now())
 
             alert('Logo removed successfully!')
         } catch (err) {
@@ -154,13 +162,16 @@ function LandingPage() {
                             type="file"
                             accept="image/png, image/jpeg, image/webp, .png, .jpg, .jpeg, .webp"
                             onChange={handleFileChange}
+                            key={fileInputKey}
                         />
-                        <DefaultButton
-                            children="Delete Logo"
-                            type="button"
-                            onClick={handleRemoveLogo}
-                            className="w-full md:w-fit whitespace-nowrap bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA] px-2! py-1!"
-                        />
+                        {landingPageData.logo && (
+                            <DefaultButton
+                                children="Delete Logo"
+                                type="button"
+                                onClick={handleRemoveLogo}
+                                className="w-full md:w-fit whitespace-nowrap bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA] px-2! py-1!"
+                            />
+                        )}
                     </div>
                     <TextField
                         label="Message 1"

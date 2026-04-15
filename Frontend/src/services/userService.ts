@@ -203,6 +203,12 @@ export const apiService = {
         return response.data
     },
 
+    deleteFile: async <T>(resource: string): Promise<T> => {
+        const response = await apiClient.delete<T>(`${resource}/`)
+
+        return response.data
+    },
+
     getCampaignSmtp: async (id: number) => {
         const response = await apiClient.get(`campaigns/${id}/smtp/`)
 

@@ -4,6 +4,7 @@ import type { EmailTemplate } from '../../types/models.ts'
 import { useState } from 'react'
 import TextField from '../TextField.tsx'
 import { useAuth } from '../../context/AuthContext.tsx'
+import { apiService } from '../../services/userService.ts'
 
 interface TemplateModalProps {
     isOpen: boolean
@@ -46,6 +47,22 @@ function TemplateModal({
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setSignatureFile(e.target.files[0])
+        }
+    }
+
+    const handleFileDelete = async () => {
+        try {
+            await apiService.deleteFile(
+                `templates/${emailTemplateData.id}/delete-signature`
+            )
+
+            setEmailTemplateData((prev) => ({
+                ...prev,
+                signature_image_url: '',
+            }))
+            setSignatureFile(null)
+        } catch (err) {
+            console.error(err)
         }
     }
 
@@ -169,7 +186,7 @@ function TemplateModal({
                         <DefaultButton
                             children="Delete Logo"
                             type="button"
-                            // onClick={handleRemoveLogo}
+                            onClick={handleFileDelete}
                             className="w-full md:w-fit whitespace-nowrap bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA] px-2! py-1!"
                         />
                     )}

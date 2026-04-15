@@ -158,12 +158,34 @@ function TemplateModal({
                     rows={12}
                 />
 
-                <TextInput
-                    label="Email Signature"
-                    type="file"
-                    accept="image/png, image/jpeg, .png, .jpg, .jpeg,"
-                    onChange={handleFileChange}
-                />
+                <div className="flex flex-col md:flex-row md:items-end gap-y-2 w-full">
+                    <TextInput
+                        label="Email Signature"
+                        type="file"
+                        accept="image/png, image/jpeg, .png, .jpg, .jpeg,"
+                        onChange={handleFileChange}
+                    />
+                    {emailTemplateData.signature_image_url && (
+                        <DefaultButton
+                            children="Delete Logo"
+                            type="button"
+                            // onClick={handleRemoveLogo}
+                            className="w-full md:w-fit whitespace-nowrap bg-[#DC3545] hover:bg-[#FF6B6B] text-[#F8F9FA] px-2! py-1!"
+                        />
+                    )}
+                </div>
+
+                {(emailTemplateData.signature_image_url || signatureFile) && (
+                    <img
+                        src={
+                            signatureFile
+                                ? URL.createObjectURL(signatureFile)
+                                : emailTemplateData.signature_image_url
+                        }
+                        alt={`${emailTemplateData.name} Signature Preview`}
+                        className="w-full max-w-[320px] object-contain"
+                    />
+                )}
 
                 <DefaultButton
                     type="submit"

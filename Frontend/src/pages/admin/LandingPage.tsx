@@ -8,12 +8,12 @@ import { apiService } from '../../services/userService'
 import type { Landing } from '../../types/models'
 
 function LandingPage() {
-    const [landingPageData, setLandingPageData] = useState({
+    const [landingPageData, setLandingPageData] = useState<Landing>({
         landing_title: '',
         landing_message1: '',
         landing_message2: '',
         landing_button_text: '',
-        logo_url: '',
+        logo: '',
         updated_at: '',
     })
     const [logoFile, setLogoFile] = useState<File | null>(null)
@@ -28,7 +28,7 @@ function LandingPage() {
                 setIsLoading(true)
                 const data = await apiService.getSingleton<Landing>('settings')
 
-                setLandingPageData(data || '')
+                setLandingPageData(data)
             } catch (err) {
                 console.error('Failed to load landing page content:', err)
                 setError('Failed to load current settings.')

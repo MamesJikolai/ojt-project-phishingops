@@ -175,7 +175,6 @@ export interface Landing {
     landing_message1: string
     landing_message2: string
     landing_button_text: string
-    include_logo: boolean
     logo: string
     updated_at: string
 }

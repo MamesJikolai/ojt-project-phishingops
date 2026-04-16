@@ -5,6 +5,7 @@ import { useState } from 'react'
 import TextField from '../TextField.tsx'
 import { useAuth } from '../../context/AuthContext.tsx'
 import { apiService } from '../../services/userService.ts'
+import RichTextField from '../RichTextField.tsx'
 
 interface TemplateModalProps {
     isOpen: boolean
@@ -164,15 +165,17 @@ function TemplateModal({
                     className="w-full"
                 />
 
-                <TextField
+                <RichTextField
                     label="Body"
-                    name="body_html"
                     description={bodyDescription}
-                    placeholder="Email Body"
                     value={emailTemplateData.body_html}
-                    onChange={handleInputChange}
+                    onChange={(value) =>
+                        setEmailTemplateData((prev) => ({
+                            ...prev,
+                            body_html: value,
+                        }))
+                    }
                     className="w-full"
-                    rows={12}
                 />
 
                 <div className="flex flex-col md:flex-row md:items-end gap-y-2 w-full">

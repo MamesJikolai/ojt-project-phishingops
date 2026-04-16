@@ -8,7 +8,6 @@ import Highlight from '@tiptap/extension-highlight'
 import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
 import TextAlign from '@tiptap/extension-text-align'
-import DefaultButton from './DefaultButton'
 
 type MenuItem = {
     icon?: string

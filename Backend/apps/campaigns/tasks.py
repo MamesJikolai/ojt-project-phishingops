@@ -82,54 +82,6 @@ def _plain_to_html(text: str) -> str:
     footer = '</body></html>'
     return header + body_content + footer
 
-
-# def _append_signature(html_body: str, template):
-#     """
-#     If the template has a signature_image, append it using CID inline
-#     attachment — the correct method for email signatures.
-
-#     data: URI images are blocked by Gmail, Outlook, and most email clients.
-#     CID attachments are universally supported.
-
-#     Returns (html_body, image_data, mime_type, cid) where:
-#       - html_body   : updated HTML with <img src="cid:...">
-#       - image_data  : raw bytes of the image (None if no signature)
-#       - mime_type   : e.g. 'image/png' (None if no signature)
-#       - cid         : the Content-ID string (None if no signature)
-#     """
-#     if not template.signature_image:
-#         return html_body, None, None, None
-
-#     try:
-#         import mimetypes
-
-#         sig_path = template.signature_image.path
-#         mime, _  = mimetypes.guess_type(sig_path)
-#         mime     = mime or 'image/png'
-#         cid      = 'signature_image_phishingops'
-
-#         with open(sig_path, 'rb') as f:
-#             image_data = f.read()
-
-#         sig_html = (
-#             '<div style="margin-top:24px;padding-top:16px;'
-#             'border-top:1px solid #e0e0e0;">'
-#             f'<img src="cid:{cid}" '
-#             'style="max-width:400px;height:auto;display:block;" '
-#             'alt="Signature" />'
-#             '</div>'
-#         )
-
-#         if '</body>' in html_body:
-#             html_body = html_body.replace('</body>', sig_html + '</body>', 1)
-#         else:
-#             html_body = html_body + sig_html
-
-#         return html_body, image_data, mime, cid
-
-#     except Exception as exc:
-#         logger.warning(f'Signature image could not be loaded: {exc}')
-#         return html_body, None, None, None
     
 def _append_signature(html_body: str, template):
     """
@@ -246,8 +198,8 @@ def render_body(body_html: str, target, campaign) -> str:
     for placeholder, value in replacements.items():
         body = body.replace(placeholder, value)
 
-    # If the admin typed plain text (no HTML tags), convert it to
-    # HTML so newlines and paragraphs render correctly in email clients
+    body = _convert_markdown_links(body)
+
     if not _is_html(body):
         body = _plain_to_html(body)
 

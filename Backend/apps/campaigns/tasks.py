@@ -492,15 +492,15 @@ def send_manager_notification(target_id: int):
 
     html_body = (
         f'<p>Dear {manager_name},</p>'
-        f'<p>This is an automated notification from the <strong>{company_name}</strong> '
+        f'<p>This is an automated notification from the <strong>PhishingOps</strong> '
         f'Security Awareness Program.</p>'
         f'<p>Your team member <strong>{target_name}</strong> '
         f'({target.email}) clicked a simulated phishing link as part of the '
         f'<strong>{campaign_name}</strong> campaign.</p>'
         f'<p>They have been redirected to the security awareness training module. '
         f'You may wish to follow up with them to reinforce good security practices.</p>'
-        f'<p>This message was sent automatically. Please do not reply.</p>'
-        f'<p>— {company_name} Security Team</p>'
+        f'<p><em>This message was sent automatically. Please do not reply.</em></p>'
+        f'<p>— PhishingOps Security Team</p>'
     )
 
     try:
